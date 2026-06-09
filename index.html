@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zayn's Curriculum — The First Five Years</title>
+<meta name="description" content="A complete early-childhood learning curriculum for Zayn, age 1 to 5. Language, science, Arabic & faith, creativity & character." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ZAYN'S CURRICULUM — design tokens
+   Palette: sage-paper base, deep forest primary, 4 pillar hues.
+   One accent (forest green) for all interactive states.
+   Pillar colors are functional category coding only.
+   ============================================================ */
+:root{
+  --bg:#F3F6EE;
+  --surface:#FFFFFF;
+  --surface-2:#FBFCF8;
+  --ink:#23291E;
+  --muted:#5C6552;
+  --faint:#8A917F;
+  --line:#E2E8D7;
+  --line-soft:#EDF1E6;
+
+  --green:#2F6B4F;
+  --green-deep:#22503B;
+  --green-soft:#E6EFE7;
+
+  /* pillar hues */
+  --p-lang:#D9694A;   --p-lang-soft:#FBEAE2;
+  --p-wonder:#2C8C8C; --p-wonder-soft:#DDF0EF;
+  --p-roots:#367A56;  --p-roots-soft:#E2F0E5;
+  --p-heart:#D99A2B;  --p-heart-soft:#FAF0D9;
+
+  --shadow-sm:0 1px 2px rgba(35,41,30,.04), 0 2px 8px rgba(35,41,30,.05);
+  --shadow-md:0 6px 18px rgba(35,41,30,.07), 0 2px 6px rgba(35,41,30,.04);
+  --shadow-lg:0 20px 50px rgba(35,41,30,.12), 0 6px 16px rgba(35,41,30,.06);
+
+  --r-card:22px;
+  --r-sm:14px;
+  --r-pill:999px;
+
+  --maxw:1180px;
+  --ease:cubic-bezier(.16,1,.3,1);
+
+  --font-d:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-b:'Nunito Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-ar:'Amiri',serif;
+}
+[data-theme="dark"]{
+  --bg:#15180F;
+  --surface:#1E2317;
+  --surface-2:#222818;
+  --ink:#EEF1E6;
+  --muted:#AEB69F;
+  --faint:#7E866E;
+  --line:#333A28;
+  --line-soft:#2A3020;
+  --green:#7FC59C;
+  --green-deep:#A7D9BD;
+  --green-soft:#23311F;
+  --p-lang:#EE8E6F;  --p-lang-soft:#3A241C;
+  --p-wonder:#5FB9B9;--p-wonder-soft:#16322F;
+  --p-roots:#6FC08E; --p-roots-soft:#1A3322;
+  --p-heart:#EBB857; --p-heart-soft:#382C12;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  --shadow-md:0 8px 22px rgba(0,0,0,.4);
+  --shadow-lg:0 24px 60px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  font-family:var(--font-b);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  transition:background .5s var(--ease), color .5s var(--ease);
+  overflow-x:hidden;
+}
+h1,h2,h3,h4,.d{font-family:var(--font-d);font-weight:600;letter-spacing:-.02em;line-height:1.08}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+section{padding:clamp(56px,9vw,120px) 0}
+.eyebrow{font-family:var(--font-d);font-weight:600;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green)}
+.lead{font-size:clamp(1.05rem,1.6vw,1.22rem);color:var(--muted);max-width:62ch}
+a{color:inherit}
+
+/* ---------- decorative grain layer ---------- */
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.025;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+[data-theme="dark"] .grain{mix-blend-mode:screen;opacity:.04}
+
+/* ============================== NAV ============================== */
+nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:saturate(150%) blur(14px);-webkit-backdrop-filter:saturate(150%) blur(14px);
+  border-bottom:1px solid transparent;transition:border-color .3s,background .5s var(--ease)}
+nav.scrolled{border-bottom-color:var(--line)}
+.nav-in{max-width:var(--maxw);margin:0 auto;height:68px;padding:0 24px;display:flex;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1.06rem;white-space:nowrap}
+.brand .dot{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--green),#4f9a73);display:grid;place-items:center;color:#fff;font-weight:800;flex:none;box-shadow:var(--shadow-sm)}
+.nav-links{display:flex;gap:4px;margin-left:auto;align-items:center}
+.nav-links a{font-family:var(--font-d);font-weight:500;font-size:.86rem;color:var(--muted);padding:8px 13px;border-radius:var(--r-pill);text-decoration:none;transition:color .2s,background .2s;white-space:nowrap}
+.nav-links a:hover{color:var(--ink);background:var(--green-soft)}
+.icon-btn{width:38px;height:38px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;flex:none;transition:transform .15s,background .2s}
+.icon-btn:hover{background:var(--green-soft)}
+.icon-btn:active{transform:scale(.94)}
+.menu-btn{display:none}
+@media(max-width:920px){
+  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;background:var(--surface);
+    padding:12px;gap:2px;border-bottom:1px solid var(--line);box-shadow:var(--shadow-md)}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:1rem;padding:12px 14px;width:100%}
+  .menu-btn{display:grid;margin-left:auto}
+}
+
+/* ============================== HERO ============================== */
+.hero{position:relative;padding:clamp(40px,7vw,70px) 0 clamp(56px,8vw,96px);overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+@media(max-width:880px){.hero-grid{grid-template-columns:1fr;gap:32px}}
+.hero h1{font-size:clamp(2.5rem,6.4vw,4.3rem);font-weight:700;margin:18px 0 20px}
+.hero h1 em{font-style:normal;color:var(--green);position:relative}
+.hero .lead{font-size:clamp(1.08rem,1.8vw,1.3rem)}
+.age-badge{display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-pill);padding:7px 8px 7px 16px;font-family:var(--font-d);font-weight:600;font-size:.84rem;box-shadow:var(--shadow-sm)}
+.age-badge b{background:var(--green);color:#fff;border-radius:var(--r-pill);padding:4px 11px;font-size:.8rem}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{font-family:var(--font-d);font-weight:600;font-size:.95rem;border-radius:var(--r-pill);padding:13px 24px;
+  border:1px solid transparent;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+  transition:transform .15s var(--ease),box-shadow .2s,background .2s}
+.btn-primary{background:var(--green);color:#fff;box-shadow:var(--shadow-md)}
+.btn-primary:hover{background:var(--green-deep);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.btn-primary:active{transform:translateY(0) scale(.985)}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{background:var(--green-soft);transform:translateY(-2px)}
+
+/* hero visual: stacked illustrative cards */
+.hero-art{position:relative;height:clamp(320px,38vw,440px)}
+.float-card{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);
+  box-shadow:var(--shadow-lg);padding:18px 20px;display:flex;gap:13px;align-items:center;animation:floaty 7s var(--ease) infinite}
+.float-card .fc-ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex:none;font-size:1.4rem}
+.float-card .fc-t{font-family:var(--font-d);font-weight:700;font-size:.96rem;line-height:1.1}
+.float-card .fc-s{font-size:.78rem;color:var(--muted)}
+.fc1{top:4%;left:0;animation-delay:0s}
+.fc2{top:34%;right:2%;animation-delay:.9s}
+.fc3{bottom:14%;left:8%;animation-delay:1.8s}
+.fc4{bottom:0;right:12%;animation-delay:2.7s}
+.hero-orb{position:absolute;inset:0;margin:auto;width:62%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#67b58e,var(--green) 60%,var(--green-deep));
+  filter:blur(2px);opacity:.92;box-shadow:0 30px 80px rgba(47,107,79,.35)}
+.hero-orb span{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(3rem,8vw,5rem);filter:blur(0)}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@media (prefers-reduced-motion:reduce){.float-card{animation:none}}
+@media(max-width:880px){.hero-art{display:none}}
+
+.stat-row{display:flex;gap:30px;flex-wrap:wrap;margin-top:38px;padding-top:28px;border-top:1px solid var(--line)}
+.stat b{font-family:var(--font-d);font-size:1.7rem;font-weight:700;color:var(--green);display:block;line-height:1}
+.stat span{font-size:.82rem;color:var(--muted)}
+
+/* ============================== PHILOSOPHY ============================== */
+.phil-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:46px}
+@media(max-width:880px){.phil-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.phil-grid{grid-template-columns:1fr}}
+.phil{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease),box-shadow .25s}
+.phil:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.phil .n{font-family:var(--font-d);font-weight:800;font-size:.8rem;color:var(--green);opacity:.5}
+.phil h4{font-size:1.12rem;margin:10px 0 8px}
+.phil p{font-size:.92rem;color:var(--muted)}
+
+/* ============================== PILLARS ============================== */
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:46px}
+@media(max-width:760px){.pillars{grid-template-columns:1fr}}
+.pillar{position:relative;border-radius:var(--r-card);padding:30px;overflow:hidden;border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);transition:transform .3s var(--ease),box-shadow .3s}
+.pillar:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+.pillar .glyph{font-size:2rem;width:60px;height:60px;border-radius:17px;display:grid;place-items:center;margin-bottom:18px}
+.pillar h3{font-size:1.4rem;margin-bottom:8px}
+.pillar .tag{font-family:var(--font-d);font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:block}
+.pillar p{font-size:.95rem;color:var(--muted);margin-bottom:16px}
+.pillar ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.pillar li{font-size:.88rem;display:flex;gap:9px;align-items:flex-start}
+.pillar li::before{content:"";width:7px;height:7px;border-radius:50%;margin-top:8px;flex:none;background:currentColor}
+.pillar.lang{background:linear-gradient(160deg,var(--p-lang-soft),var(--surface) 75%)}
+.pillar.lang .glyph{background:var(--p-lang);color:#fff} .pillar.lang .tag,.pillar.lang li{color:var(--p-lang)}
+.pillar.wonder{background:linear-gradient(160deg,var(--p-wonder-soft),var(--surface) 75%)}
+.pillar.wonder .glyph{background:var(--p-wonder);color:#fff} .pillar.wonder .tag,.pillar.wonder li{color:var(--p-wonder)}
+.pillar.roots{background:linear-gradient(160deg,var(--p-roots-soft),var(--surface) 75%)}
+.pillar.roots .glyph{background:var(--p-roots);color:#fff} .pillar.roots .tag,.pillar.roots li{color:var(--p-roots)}
+.pillar.heart{background:linear-gradient(160deg,var(--p-heart-soft),var(--surface) 75%)}
+.pillar.heart .glyph{background:var(--p-heart);color:#fff} .pillar.heart .tag,.pillar.heart li{color:var(--p-heart)}
+.pillar li span{color:var(--ink)}
+
+/* ============================== JOURNEY ============================== */
+.stage-tabs{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 14px;margin-top:38px;scrollbar-width:none}
+.stage-tabs::-webkit-scrollbar{display:none}
+.stage-tab{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-card);
+  padding:16px 20px;cursor:pointer;text-align:left;min-width:148px;transition:all .25s var(--ease);font-family:var(--font-b)}
+.stage-tab:hover{border-color:var(--green);transform:translateY(-2px)}
+.stage-tab.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:var(--shadow-md)}
+.stage-tab .age{font-family:var(--font-d);font-weight:700;font-size:1.05rem;display:block}
+.stage-tab .nm{font-size:.78rem;color:var(--muted)}
+.stage-tab.active .nm{color:rgba(255,255,255,.85)}
+.stage-tab .now{display:inline-block;font-family:var(--font-d);font-size:.62rem;font-weight:700;letter-spacing:.1em;
+  background:var(--p-heart);color:#3a2c0c;padding:2px 8px;border-radius:var(--r-pill);margin-top:7px;text-transform:uppercase}
+.stage-tab.active .now{background:#fff;color:var(--green-deep)}
+
+.stage-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:clamp(24px,4vw,40px);box-shadow:var(--shadow-md);margin-top:8px}
+.stage-head{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;padding-bottom:22px;border-bottom:1px solid var(--line-soft);margin-bottom:26px}
+.stage-head h3{font-size:clamp(1.6rem,3.4vw,2.3rem)}
+.stage-head .sub{color:var(--muted);font-size:.95rem;margin-top:4px}
+.brain-note{background:var(--green-soft);border-radius:var(--r-sm);padding:14px 18px;font-size:.9rem;max-width:420px}
+.brain-note b{color:var(--green-deep);font-family:var(--font-d)}
+.stage-cols{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 36px}
+@media(max-width:760px){.stage-cols{grid-template-columns:1fr;gap:24px}}
+.scol h5{font-family:var(--font-d);font-size:1.04rem;display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.scol h5 .pip{width:13px;height:13px;border-radius:5px;flex:none}
+.scol ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.scol li{font-size:.92rem;padding-left:22px;position:relative;color:var(--muted)}
+.scol li::before{content:"›";position:absolute;left:4px;top:-1px;font-family:var(--font-d);font-weight:700;color:var(--green)}
+.scol li b{color:var(--ink);font-weight:600}
+
+/* ============================== DAILY RHYTHM ============================== */
+.rhythm{position:relative;margin-top:42px;display:flex;flex-direction:column;gap:0}
+.rblock{display:grid;grid-template-columns:96px 1fr;gap:22px;padding:18px 0;border-bottom:1px dashed var(--line);align-items:start;cursor:pointer}
+.rblock:last-child{border-bottom:none}
+.rtime{font-family:var(--font-d);font-weight:700;color:var(--green);font-size:.95rem;padding-top:2px;text-align:right}
+.rbody h5{font-family:var(--font-d);font-size:1.08rem;display:flex;align-items:center;gap:10px}
+.rbody .emoji{font-size:1.15rem}
+.rbody p{font-size:.9rem;color:var(--muted);margin-top:4px;max-height:0;overflow:hidden;opacity:0;transition:max-height .4s var(--ease),opacity .3s,margin .3s}
+.rblock.open .rbody p{max-height:120px;opacity:1;margin-top:8px}
+.rbody .pill-tag{font-family:var(--font-d);font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:var(--r-pill);margin-left:auto}
+.rbody .rtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* ============================== ACTIVITIES ============================== */
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-top:34px;align-items:center}
+.chip{font-family:var(--font-d);font-weight:600;font-size:.84rem;border:1px solid var(--line);background:var(--surface);
+  border-radius:var(--r-pill);padding:9px 16px;cursor:pointer;transition:all .2s;display:inline-flex;gap:7px;align-items:center}
+.chip .pip{width:10px;height:10px;border-radius:50%}
+.chip.active{border-color:var(--green);background:var(--green);color:#fff}
+.chip:not(.active):hover{border-color:var(--green)}
+.surprise{margin-left:auto}
+.act-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+@media(max-width:880px){.act-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.act-grid{grid-template-columns:1fr}}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:22px;box-shadow:var(--shadow-sm);
+  transition:transform .25s var(--ease),box-shadow .25s,border-color .25s;position:relative;overflow:hidden}
+.act:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.act.flash{animation:flash 1.1s var(--ease)}
+@keyframes flash{0%{box-shadow:0 0 0 0 var(--green)}40%{box-shadow:0 0 0 4px var(--green-soft),var(--shadow-lg)}100%{box-shadow:var(--shadow-sm)}}
+.act .bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+.act .a-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.act .a-emoji{font-size:1.7rem}
+.act .a-age{font-family:var(--font-d);font-size:.68rem;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:3px 9px;border-radius:var(--r-pill);white-space:nowrap}
+.act h4{font-size:1.08rem;margin-bottom:7px}
+.act p{font-size:.88rem;color:var(--muted)}
+.act .a-mat{font-size:.78rem;color:var(--faint);margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft)}
+.act .a-mat b{color:var(--muted);font-family:var(--font-d);font-weight:600}
+.act .a-pill{font-family:var(--font-d);font-size:.66rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+
+/* ============================== ARABIC & FAITH ============================== */
+.ar-wrap{margin-top:38px}
+.ar-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.ar-tab{font-family:var(--font-d);font-weight:600;font-size:.88rem;border:1px solid var(--line);background:var(--surface);
+  border-radius:var(--r-pill);padding:9px 18px;cursor:pointer;transition:all .2s}
+.ar-tab.active{background:var(--p-roots);border-color:var(--p-roots);color:#fff}
+.ar-tab:not(.active):hover{border-color:var(--p-roots)}
+.ar-pane{display:none}
+.ar-pane.active{display:block;animation:fade .4s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.alpha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:11px}
+.letter{aspect-ratio:1;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s var(--ease)}
+.letter:hover{border-color:var(--p-roots);transform:translateY(-3px);box-shadow:var(--shadow-md);background:var(--p-roots-soft)}
+.letter.sel{background:var(--p-roots);border-color:var(--p-roots)}
+.letter .ar{font-family:var(--font-ar);font-size:2rem;line-height:1;color:var(--ink)}
+.letter.sel .ar{color:#fff}
+.letter .nm{font-family:var(--font-d);font-size:.62rem;font-weight:600;color:var(--muted);margin-top:5px}
+.letter.sel .nm{color:rgba(255,255,255,.85)}
+.letter-detail{margin-top:18px;background:var(--p-roots-soft);border:1px solid var(--line);border-radius:var(--r-card);
+  padding:24px 26px;display:flex;align-items:center;gap:26px;min-height:120px}
+.letter-detail .big{font-family:var(--font-ar);font-size:4.5rem;line-height:1;color:var(--p-roots)}
+.letter-detail .info h4{font-size:1.3rem}
+.letter-detail .info .tl{color:var(--muted);font-family:var(--font-d);font-weight:600;margin:2px 0 10px}
+.letter-detail .info .word{font-size:1rem}
+.letter-detail .info .word b{font-family:var(--font-ar);font-size:1.5rem;color:var(--p-roots);margin-right:8px;vertical-align:middle}
+@media(max-width:520px){.letter-detail{flex-direction:column;text-align:center;gap:14px}}
+
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:16px 18px;transition:transform .2s,box-shadow .2s}
+.mini:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}
+.mini .ar{font-family:var(--font-ar);font-size:1.7rem;color:var(--p-roots);line-height:1.2}
+.mini .tl{font-family:var(--font-d);font-weight:600;font-size:.95rem;margin-top:4px}
+.mini .en{font-size:.82rem;color:var(--muted)}
+.dua{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--p-roots);border-radius:var(--r-sm);padding:18px 20px;margin-bottom:14px}
+.dua .when{font-family:var(--font-d);font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--p-roots)}
+.dua .ar{font-family:var(--font-ar);font-size:1.7rem;color:var(--ink);margin:8px 0;line-height:1.7}
+.dua .tl{font-style:italic;color:var(--muted);font-size:.9rem}
+.dua .en{font-size:.9rem;margin-top:5px}
+.value-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.value{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:18px;transition:transform .2s,box-shadow .2s}
+.value:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}
+.value .e{font-size:1.5rem}
+.value h5{font-family:var(--font-d);font-size:1rem;margin:8px 0 4px}
+.value h5 b{font-family:var(--font-ar);color:var(--p-roots);font-weight:400;margin-left:6px}
+.value p{font-size:.84rem;color:var(--muted)}
+
+/* ============================== MILESTONES ============================== */
+.ms-top{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-top:38px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-card);padding:22px 26px;box-shadow:var(--shadow-sm)}
+.ring{--p:0;width:88px;height:88px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--green) calc(var(--p)*1%),var(--line-soft) 0)}
+.ring::after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--surface)}
+.ring b{position:relative;z-index:1;font-family:var(--font-d);font-weight:800;font-size:1.3rem;color:var(--green)}
+.ms-top .txt{flex:1;min-width:200px}
+.ms-top .txt h4{font-size:1.15rem}
+.ms-top .txt p{font-size:.88rem;color:var(--muted)}
+.reset{font-family:var(--font-d);font-weight:600;font-size:.8rem;border:1px solid var(--line);background:var(--bg);
+  border-radius:var(--r-pill);padding:9px 16px;cursor:pointer;transition:background .2s}
+.reset:hover{background:var(--green-soft)}
+.ms-domains{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+@media(max-width:760px){.ms-domains{grid-template-columns:1fr}}
+.domain{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:22px;box-shadow:var(--shadow-sm)}
+.domain h4{font-size:1.08rem;display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.domain .dcount{font-family:var(--font-d);font-weight:600;font-size:.78rem;color:var(--green);margin-bottom:14px;display:block}
+.check{display:flex;gap:12px;align-items:flex-start;padding:9px 0;cursor:pointer;font-size:.92rem;border-top:1px solid var(--line-soft)}
+.check:first-of-type{border-top:none}
+.check input{display:none}
+.check .box{width:21px;height:21px;border-radius:7px;border:2px solid var(--line);flex:none;margin-top:1px;
+  display:grid;place-items:center;transition:all .2s var(--ease)}
+.check .box svg{opacity:0;transform:scale(.4);transition:all .2s var(--ease);stroke:#fff}
+.check input:checked + .box{background:var(--green);border-color:var(--green)}
+.check input:checked + .box svg{opacity:1;transform:scale(1)}
+.check input:checked ~ .lbl{color:var(--faint);text-decoration:line-through}
+.check .lbl{transition:color .2s}
+
+/* ============================== READING / SONGS ============================== */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px}
+@media(max-width:820px){.two-col{grid-template-columns:1fr}}
+.list-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:28px;box-shadow:var(--shadow-sm)}
+.list-card h3{font-size:1.3rem;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.list-card .sub{font-size:.86rem;color:var(--muted);margin-bottom:18px}
+.litem{display:flex;gap:13px;padding:12px 0;border-top:1px solid var(--line-soft);align-items:flex-start}
+.litem .li-e{font-size:1.3rem;flex:none}
+.litem .li-t{font-family:var(--font-d);font-weight:600;font-size:.96rem}
+.litem .li-s{font-size:.82rem;color:var(--muted)}
+
+/* ============================== ENVIRONMENT ============================== */
+.env-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+@media(max-width:820px){.env-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.env-grid{grid-template-columns:1fr}}
+.env{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease)}
+.env:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.env .e{font-size:1.7rem;margin-bottom:12px}
+.env h4{font-size:1.08rem;margin-bottom:7px}
+.env p{font-size:.88rem;color:var(--muted)}
+
+/* ============================== FOOTER ============================== */
+footer{background:var(--green-deep);color:#E9F2EB;padding:clamp(48px,8vw,80px) 0 40px;margin-top:40px}
+[data-theme="dark"] footer{background:#0F120A;border-top:1px solid var(--line)}
+footer .f-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+@media(max-width:680px){footer .f-grid{grid-template-columns:1fr;gap:24px}}
+footer h2{font-size:clamp(1.6rem,4vw,2.4rem);color:#fff;margin-bottom:14px}
+footer p{color:#BcdCc4;color:rgba(233,242,235,.78);max-width:48ch}
+footer .quote{font-family:var(--font-ar);font-size:1.5rem;color:#cfe6d6;margin-top:18px;line-height:1.9}
+footer .qtl{font-size:.86rem;color:rgba(233,242,235,.6);font-style:italic}
+footer .f-meta{font-size:.8rem;color:rgba(233,242,235,.5);margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+.section-head{max-width:64ch}
+.section-head h2{font-size:clamp(1.8rem,4.2vw,2.8rem);margin:12px 0 14px}
+
+/* ============================== WEEKLY PLANNER ============================== */
+.planner-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:34px}
+.planner-note{font-size:.84rem;color:var(--muted);margin-left:auto}
+.planner-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-top:24px}
+@media(max-width:1180px){.planner-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:820px){.planner-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.planner-grid{grid-template-columns:1fr}}
+.day-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 14px 12px;
+  box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:9px;min-height:230px;transition:box-shadow .2s}
+.day-card:hover{box-shadow:var(--shadow-md)}
+.day-card .dh{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.day-card .dname{font-family:var(--font-d);font-weight:700;font-size:.98rem}
+.day-card .ddate{font-size:.72rem;color:var(--faint);text-align:right;border:none;background:transparent;outline:none;
+  width:46px;font-family:var(--font-b)}
+.day-card .ddate:focus{color:var(--green)}
+.focus-chip{font-family:var(--font-d);font-weight:700;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 9px;border-radius:var(--r-pill);align-self:flex-start}
+.slot{font-size:.8rem;display:flex;gap:7px;align-items:flex-start;border-top:1px solid var(--line-soft);padding-top:8px}
+.slot .se{font-size:1.05rem;flex:none;line-height:1.2}
+.slot .st{flex:1;color:var(--ink)}
+.slot .st small{display:block;color:var(--faint);font-size:.68rem;margin-top:1px}
+.slot .swap{border:none;background:transparent;cursor:pointer;color:var(--faint);flex:none;padding:0;
+  display:grid;place-items:center;transition:color .2s,transform .3s var(--ease)}
+.slot .swap:hover{color:var(--green);transform:rotate(180deg)}
+.win{margin-top:auto;padding-top:9px;border-top:1px dashed var(--line)}
+.win .wl{font-family:var(--font-d);font-weight:600;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+.win .wline{border-bottom:1.5px dotted var(--line);height:15px;margin-top:6px}
+
+/* print */
+@media print{
+  nav,.grain,.hero-art,.surprise,.reset,.theme-toggle,.menu-btn{display:none!important}
+  body{background:#fff;color:#000}
+  section{padding:24px 0;page-break-inside:avoid}
+  .stage-panel,.act,.domain,.pillar,.list-card,.env,.phil{box-shadow:none;border:1px solid #ccc}
+  .ar-pane{display:block!important}
+  .stage-tabs{display:none}
+  .reveal{opacity:1!important;transform:none!important}
+  .planner-toolbar,.planner-note,.slot .swap{display:none!important}
+  .day-card{border:1px solid #bbb;box-shadow:none;min-height:200px;break-inside:avoid}
+  .planner-grid{grid-template-columns:repeat(4,1fr)!important;gap:8px}
+  /* planner-only print mode */
+  body.print-planner section:not(#planner),
+  body.print-planner header,
+  body.print-planner footer{display:none!important}
+  body.print-planner #planner{padding:0!important}
+}
+@page{margin:14mm}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<!-- ============================== NAV ============================== -->
+<nav id="nav">
+  <div class="nav-in">
+    <div class="brand"><span class="dot">ز</span> Zayn's Curriculum</div>
+    <div class="nav-links" id="navlinks">
+      <a href="#pillars">Pillars</a>
+      <a href="#journey">The Journey</a>
+      <a href="#rhythm">Daily Rhythm</a>
+      <a href="#activities">Activities</a>
+      <a href="#planner">This Week</a>
+      <a href="#arabic">Arabic &amp; Faith</a>
+      <a href="#milestones">Milestones</a>
+      <a href="#reading">Books &amp; Songs</a>
+    </div>
+    <button class="icon-btn theme-toggle" id="themeBtn" aria-label="Toggle dark mode" title="Toggle light / dark">
+      <svg id="themeIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================== HERO ============================== -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="age-badge">Right now, Zayn is <b id="ageNow">13 months</b></span>
+      <h1>The plan to raise a <em>curious, kind,<br>capable</em> little human.</h1>
+      <p class="lead">A complete home curriculum for Zayn's first five years, built on Montessori, Reggio Emilia, respectful caregiving, and Islamic tarbiyah. Four pillars, one child, every day that matters most.</p>
+      <div class="hero-cta">
+        <a href="play.html" class="btn btn-primary">🎈 Open Zayn's Play &amp; Learn
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#journey" class="btn btn-ghost">The plan</a>
+      </div>
+      <p class="lead" style="margin-top:14px;font-size:.96rem">The hub below is for <b>you</b>. The button above opens the tappable, talking game for <b>Zayn</b> — first words in your own recorded voice, made for the iPad &amp; Apple Pencil.</p>
+      <div class="stat-row">
+        <div class="stat"><b>1M+</b><span>new neural connections<br>formed every second</span></div>
+        <div class="stat"><b>90%</b><span>of brain growth<br>happens before age 5</span></div>
+        <div class="stat"><b>4</b><span>pillars woven into<br>everyday play</span></div>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="hero-orb"><span>🌱</span></div>
+      <div class="float-card fc1"><div class="fc-ico" style="background:var(--p-lang-soft)">📖</div><div><div class="fc-t">First words</div><div class="fc-s">Language &amp; Mind</div></div></div>
+      <div class="float-card fc2"><div class="fc-ico" style="background:var(--p-wonder-soft)">🔍</div><div><div class="fc-t">Why? How?</div><div class="fc-s">Wonder &amp; World</div></div></div>
+      <div class="float-card fc3"><div class="fc-ico" style="background:var(--p-roots-soft)">ا ب ت</div><div><div class="fc-t">Arabic letters</div><div class="fc-s">Roots &amp; Faith</div></div></div>
+      <div class="float-card fc4"><div class="fc-ico" style="background:var(--p-heart-soft)">🎨</div><div><div class="fc-t">Make &amp; feel</div><div class="fc-s">Heart &amp; Hands</div></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== PHILOSOPHY ============================== -->
+<section id="philosophy">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">How this works</span>
+      <h2>Four ideas behind everything here.</h2>
+      <p class="lead">This is not school at a desk. It is a way of living the day so that learning is woven into meals, play, walks, and bedtime.</p>
+    </div>
+    <div class="phil-grid">
+      <div class="phil reveal"><div class="n">01</div><h4>The child leads</h4><p>Follow what Zayn is drawn to. His attention is the curriculum. We set the table; he chooses the work.</p></div>
+      <div class="phil reveal"><div class="n">02</div><h4>The world is the classroom</h4><p>A puddle, a spice jar, a grandparent's voice. Real objects and real people teach more than any screen.</p></div>
+      <div class="phil reveal"><div class="n">03</div><h4>Repeat, then stretch</h4><p>Toddlers master through repetition. We repeat what he loves, then add one small new challenge.</p></div>
+      <div class="phil reveal"><div class="n">04</div><h4>Roots and wings together</h4><p>Arabic, faith, and family heritage grow right alongside science and creativity, never as an afterthought.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== PILLARS ============================== -->
+<section id="pillars">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The framework</span>
+      <h2>The four pillars.</h2>
+      <p class="lead">Every activity, book, and milestone in this curriculum belongs to one of these. Together they raise a whole child.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar lang reveal">
+        <div class="glyph">📖</div>
+        <span class="tag">Core academics</span>
+        <h3>Language &amp; Mind</h3>
+        <p>Words, letters, numbers, and the thinking that comes before reading and math. Built from conversation up.</p>
+        <ul>
+          <li><span>Talk all day: narrate, name, ask, wait for an answer</span></li>
+          <li><span>Read aloud daily, point to words and pictures</span></li>
+          <li><span>Counting, sorting, patterns, cause and effect</span></li>
+          <li><span>Memory, focus, and problem-solving games</span></li>
+        </ul>
+      </div>
+      <div class="pillar wonder reveal">
+        <div class="glyph">🔭</div>
+        <span class="tag">Science &amp; curiosity</span>
+        <h3>Wonder &amp; World</h3>
+        <p>The scientist's instinct: notice, wonder, test, repeat. Nature, the senses, and how things work.</p>
+        <ul>
+          <li><span>Daily time outdoors, in all weather</span></li>
+          <li><span>Sensory play: water, sand, textures, scents</span></li>
+          <li><span>Simple experiments and "what happens if?"</span></li>
+          <li><span>Animals, plants, weather, the body, the sky</span></li>
+        </ul>
+      </div>
+      <div class="pillar roots reveal">
+        <div class="glyph">🕌</div>
+        <span class="tag">Arabic &amp; heritage</span>
+        <h3>Roots &amp; Faith</h3>
+        <p>Arabic from the first word, the Qur'an as a familiar sound, and the values that shape a good character.</p>
+        <ul>
+          <li><span>Arabic spoken and sung at home, daily</span></li>
+          <li><span>The 28 letters as a game, not a drill</span></li>
+          <li><span>Short surahs and du'as as part of the routine</span></li>
+          <li><span>Akhlaq: kindness, gratitude, honesty, respect</span></li>
+        </ul>
+      </div>
+      <div class="pillar heart reveal">
+        <div class="glyph">🎨</div>
+        <span class="tag">Creativity &amp; character</span>
+        <h3>Heart &amp; Hands</h3>
+        <p>Art, music, movement, and the emotional skills that matter more than any fact: patience, courage, empathy.</p>
+        <ul>
+          <li><span>Open-ended art: crayons, paint, dough, glue</span></li>
+          <li><span>Music and rhythm every day</span></li>
+          <li><span>Gross and fine motor: climb, pour, pinch, build</span></li>
+          <li><span>Naming feelings and learning to wait</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== JOURNEY ============================== -->
+<section id="journey">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Age 1 to 5</span>
+      <h2>The developmental journey.</h2>
+      <p class="lead">Tap a stage to see what is happening in Zayn's brain and exactly what to do across all four pillars. We start where he is today.</p>
+    </div>
+    <div class="stage-tabs" id="stageTabs"></div>
+    <div class="stage-panel" id="stagePanel"></div>
+  </div>
+</section>
+
+<!-- ============================== RHYTHM ============================== -->
+<section id="rhythm" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">A day in the life</span>
+      <h2>The daily rhythm.</h2>
+      <p class="lead">Not a strict schedule, a gentle flow. Predictable rhythm gives a toddler security. Tap any block to see the learning hidden inside it.</p>
+    </div>
+    <div class="rhythm reveal" id="rhythm"></div>
+  </div>
+</section>
+
+<!-- ============================== ACTIVITIES ============================== -->
+<section id="activities">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Do it today</span>
+      <h2>The activity library.</h2>
+      <p class="lead">Real activities you can do right now with things already in the house. Filter by pillar, or let us surprise you.</p>
+    </div>
+    <div class="filters reveal" id="filters">
+      <button class="chip active" data-f="all">All</button>
+      <button class="chip" data-f="lang"><span class="pip" style="background:var(--p-lang)"></span>Language &amp; Mind</button>
+      <button class="chip" data-f="wonder"><span class="pip" style="background:var(--p-wonder)"></span>Wonder &amp; World</button>
+      <button class="chip" data-f="roots"><span class="pip" style="background:var(--p-roots)"></span>Roots &amp; Faith</button>
+      <button class="chip" data-f="heart"><span class="pip" style="background:var(--p-heart)"></span>Heart &amp; Hands</button>
+      <button class="btn btn-primary surprise" id="surprise">🎲 Surprise me</button>
+    </div>
+    <div class="act-grid" id="actGrid"></div>
+  </div>
+</section>
+
+<!-- ============================== WEEKLY PLANNER ============================== -->
+<section id="planner">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Plan &amp; print</span>
+      <h2>This week with Zayn.</h2>
+      <p class="lead">A gentle week, balanced across all four pillars. Generate one, swap anything you like with the arrow, then print it for the fridge. Your plan saves on this device.</p>
+    </div>
+    <div class="planner-toolbar reveal">
+      <button class="btn btn-primary" id="genWeek">🎲 Plan my week</button>
+      <button class="btn btn-ghost" id="printWeek">🖨️ Print this week</button>
+      <span class="planner-note">Tip: tap any date to write it in. Tap the arrow to swap an activity or book.</span>
+    </div>
+    <div class="planner-grid" id="plannerGrid"></div>
+  </div>
+</section>
+
+<!-- ============================== ARABIC & FAITH ============================== -->
+<section id="arabic" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Roots &amp; Faith</span>
+      <h2>Arabic &amp; faith corner.</h2>
+      <p class="lead">Language and faith are learned by ear, early and joyfully. Tap a letter to hear its name and a word, then explore first words, numbers, du'as, and values.</p>
+    </div>
+    <div class="ar-wrap reveal">
+      <div class="ar-tabs" id="arTabs">
+        <button class="ar-tab active" data-p="alpha">The Alphabet</button>
+        <button class="ar-tab" data-p="words">First Words</button>
+        <button class="ar-tab" data-p="numbers">Numbers</button>
+        <button class="ar-tab" data-p="duas">Daily Du'as</button>
+        <button class="ar-tab" data-p="values">Values (Akhlaq)</button>
+      </div>
+      <div class="ar-pane active" data-pane="alpha">
+        <div class="alpha-grid" id="alphaGrid"></div>
+        <div class="letter-detail" id="letterDetail"></div>
+      </div>
+      <div class="ar-pane" data-pane="words"><div class="mini-grid" id="wordsGrid"></div></div>
+      <div class="ar-pane" data-pane="numbers"><div class="mini-grid" id="numGrid"></div></div>
+      <div class="ar-pane" data-pane="duas"><div id="duasWrap"></div></div>
+      <div class="ar-pane" data-pane="values"><div class="value-grid" id="valuesGrid"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== MILESTONES ============================== -->
+<section id="milestones">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Track his growth</span>
+      <h2>Milestone tracker.</h2>
+      <p class="lead">Gentle markers for the 12 to 24 month window, across every domain. Every child is on their own clock, this is a celebration, not a test. Your progress saves automatically on this device.</p>
+    </div>
+    <div class="ms-top reveal">
+      <div class="ring" id="ring"><b id="ringPct">0%</b></div>
+      <div class="txt"><h4 id="msTitle">Just getting started</h4><p id="msSub">Check off what Zayn is already doing. Watch the ring fill.</p></div>
+      <button class="reset" id="resetBtn">Reset tracker</button>
+    </div>
+    <div class="ms-domains" id="msDomains"></div>
+  </div>
+</section>
+
+<!-- ============================== READING & SONGS ============================== -->
+<section id="reading" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The home library</span>
+      <h2>Books &amp; songs.</h2>
+      <p class="lead">Read the same favorites over and over, that is how toddlers learn. Sing every day, in English and Arabic both.</p>
+    </div>
+    <div class="two-col">
+      <div class="list-card reveal">
+        <h3>📚 Board books to own</h3>
+        <p class="sub">Sturdy, repetitive, rhythmic. Best read aloud daily.</p>
+        <div id="bookList"></div>
+      </div>
+      <div class="list-card reveal">
+        <h3>🎵 Songs &amp; nasheeds</h3>
+        <p class="sub">Music builds language, memory, and rhythm. Sing, clap, and dance.</p>
+        <div id="songList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== ENVIRONMENT ============================== -->
+<section id="environment">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Set the stage</span>
+      <h2>The prepared home.</h2>
+      <p class="lead">You do not need a classroom. A few simple changes to the home turn the whole house into a place that invites Zayn to learn on his own.</p>
+    </div>
+    <div class="env-grid" id="envGrid"></div>
+  </div>
+</section>
+
+<!-- ============================== FOOTER ============================== -->
+<footer>
+  <div class="wrap f-grid">
+    <div class="reveal">
+      <h2>He is the future. This is the foundation.</h2>
+      <p>Built for Zayn, by Baba. Come back to this every week: pick a stage, run the daily rhythm, try two activities, check a milestone, read one book. Small, consistent, joyful. That is the whole secret.</p>
+    </div>
+    <div class="reveal">
+      <div class="quote">رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي</div>
+      <div class="qtl">"My Lord, make me an establisher of prayer, and from my descendants." (Qur'an 14:40)</div>
+    </div>
+  </div>
+  <div class="wrap"><div class="f-meta">Zayn's Curriculum · A living document · Update it as he grows. Frameworks drawn from Montessori, Reggio Emilia, RIE respectful caregiving, developmental neuroscience, and Islamic tarbiyah.</div></div>
+</footer>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const STAGES = [
+  {
+    id:"s1", age:"12–18 mo", name:"The Explorer", now:true,
+    sub:"Walking, pointing, first words, and a powerful drive to do it himself.",
+    brain:"His brain is wiring language and movement fastest right now. Every word you say and every step you let him take builds the architecture he keeps for life.",
+    cols:[
+      {pillar:"lang",title:"Language & Mind",items:[
+        ["Narrate everything","Say what you both do: \"Baba is pouring the water.\" Pause and let him babble back."],
+        ["Name, don't quiz","Point and name objects rather than testing (\"where's the ball?\"). Naming builds vocabulary faster."],
+        ["First sorting","Let him drop balls in a cup, post objects through a slot. This is early math and order."],
+        ["Picture books daily","Point to one image per page, name it, let him turn the pages."]
+      ]},
+      {pillar:"wonder",title:"Wonder & World",items:[
+        ["Outside every day","A daily walk. Let him stop, crouch, touch leaves, watch a bug. Do not rush him."],
+        ["Water play","A bowl of water, cups, a sponge. Pouring and splashing teaches volume and cause-effect."],
+        ["Treasure basket","A basket of safe natural objects (pinecone, wooden spoon, shell) to mouth and explore."],
+        ["Mirror & body","Name body parts at the mirror: \"eyes, nose, Zayn's hands.\""]
+      ]},
+      {pillar:"roots",title:"Roots & Faith",items:[
+        ["Arabic first words","Use Arabic for everyday things: ماء (maa', water), حليب (haleeb, milk), Mama, Baba, Teta."],
+        ["Qur'an as background","Play short surahs softly at the same time daily. He learns the melody before the meaning."],
+        ["Bismillah & Alhamdulillah","Say Bismillah before eating, Alhamdulillah after. He will copy the sounds soon."],
+        ["Letter sounds in play","Sing the Arabic letters. Tap the alphabet below together."]
+      ]},
+      {pillar:"heart",title:"Heart & Hands",items:[
+        ["First crayons","Chunky crayons on big paper. No rules. The grip itself is the lesson."],
+        ["Climb and pour","Safe climbing, and a small pitcher to pour water at meals. Builds gross and fine motor."],
+        ["Name his feelings","\"You're frustrated the tower fell.\" Naming emotions is the start of managing them."],
+        ["Sing & dance daily","One song with actions (clap, stomp, wave). Rhythm wires the brain."]
+      ]}
+    ]
+  },
+  {
+    id:"s2", age:"18–24 mo", name:"The Word Collector",
+    sub:"A vocabulary explosion, big feelings, and the dawn of pretend play.",
+    brain:"Words are arriving in bursts and emotions are bigger than his ability to control them. Calm narration and routine are your best tools.",
+    cols:[
+      {pillar:"lang",title:"Language & Mind",items:[
+        ["Two-word phrases","Expand his words: he says \"dog\", you say \"big dog!\" Model the next step."],
+        ["Counting in life","Count stairs, count grapes, count fingers. Number sense lives in daily moments."],
+        ["Shape & color sorting","Sort toys by color, match simple shapes. Concrete before abstract."],
+        ["Simple choices","\"Apple or banana?\" Choosing builds language and a sense of agency."]
+      ]},
+      {pillar:"wonder",title:"Wonder & World",items:[
+        ["Cause & effect toys","Buttons, lids, switches. He is a scientist testing how the world responds."],
+        ["Nature collection","Collect leaves, rocks, sticks on walks. Sort them at home."],
+        ["Kitchen helper","Washing veg, stirring, smelling spices. The kitchen is a sensory lab."],
+        ["Weather words","Name it daily: sunny, rainy, windy. Connect words to what he feels."]
+      ]},
+      {pillar:"roots",title:"Roots & Faith",items:[
+        ["Arabic body & food words","Build a small Arabic vocabulary of things he touches daily."],
+        ["Short du'as by routine","Say the sleeping and waking du'as at those moments every day."],
+        ["First surah exposure","Repeat Al-Fatihah and Al-Ikhlas aloud. Repetition is everything."],
+        ["Salam habit","Greet family with \"Assalamu alaykum.\" He will mirror the warmth."]
+      ]},
+      {pillar:"heart",title:"Heart & Hands",items:[
+        ["Pretend play begins","Feed a doll, talk on a toy phone. Pretend is deep cognitive work."],
+        ["Play dough","Squeeze, roll, pinch. Builds the hand strength needed later for writing."],
+        ["Big feelings, calm adult","Stay calm during tantrums. You are teaching the nervous system to settle."],
+        ["Instruments","A drum, shaker, or pots and spoons. Keep a steady beat together."]
+      ]}
+    ]
+  },
+  {
+    id:"s3", age:"2–3 yrs", name:"The Doer",
+    sub:"Independence, simple sentences, and a love of routines and rules.",
+    brain:"He wants to do everything himself. Channel that drive into real, purposeful tasks. Self-care builds confidence and focus.",
+    cols:[
+      {pillar:"lang",title:"Language & Mind",items:[
+        ["Full sentences","Model 3 to 4 word sentences. Read longer stories and ask \"what happens next?\""],
+        ["Counting to 10","Count with one-to-one touching of objects, not just reciting."],
+        ["Letter & sound games","Find the letter that starts his name. Play \"I spy\" with sounds."],
+        ["Puzzles & matching","Simple jigsaws and memory cards build focus and visual reasoning."]
+      ]},
+      {pillar:"wonder",title:"Wonder & World",items:[
+        ["Real experiments","Sink or float, planting a seed, ice melting. Predict, then watch."],
+        ["Care for living things","Water a plant, feed a pet. Responsibility and observation together."],
+        ["Sorting by attribute","Sort by size, then color, then type. Early logic and classification."],
+        ["Big questions","Welcome \"why?\" Answer simply and honestly, or wonder together."]
+      ]},
+      {pillar:"roots",title:"Roots & Faith",items:[
+        ["Arabic alphabet recognition","Point out letters on the wall chart. Match the sound to the shape."],
+        ["Memorize a short surah","Al-Ikhlas or An-Nas, a few words at a time, daily repetition."],
+        ["Stories of the Prophets","Tell one short, gentle story. Heritage lives in stories."],
+        ["Practice values","Name kindness and sharing when you see it: \"That was so generous.\""]
+      ]},
+      {pillar:"heart",title:"Heart & Hands",items:[
+        ["Real practical life","Pour his own drink, wipe a spill, dress himself. Independence is confidence."],
+        ["Scissors & glue","Supervised cutting and sticking. Major fine-motor milestone."],
+        ["Name and wait","Teach naming the feeling and taking a breath. The seed of self-control."],
+        ["Movement challenges","Balance beams, jumping, throwing. The body leads the brain."]
+      ]}
+    ]
+  },
+  {
+    id:"s4", age:"3–4 yrs", name:"The Storyteller",
+    sub:"Imagination, friendships, endless questions, and pre-reading skills.",
+    brain:"Imagination and social skills bloom. He learns through stories and play with others. Pre-literacy and pre-math become concrete and fun.",
+    cols:[
+      {pillar:"lang",title:"Language & Mind",items:[
+        ["Phonics through play","Letter sounds, rhyming games, clapping syllables. The road to reading."],
+        ["Tell stories together","He narrates, you write it down. He sees that talk becomes print."],
+        ["Numbers to 20 & beyond","Count, compare more/less, simple adding with objects."],
+        ["Writing his name","Trace, then copy. Big letters, low pressure, lots of praise."]
+      ]},
+      {pillar:"wonder",title:"Wonder & World",items:[
+        ["Projects, not lessons","Follow one interest deep: dinosaurs, space, trucks. Go to the library on it."],
+        ["Measure & record","Measure with a ruler, chart the weather, time how long things take."],
+        ["Build & engineer","Blocks, ramps, simple machines. Design, test, rebuild."],
+        ["Map the world","Talk about where family lives, look at a globe, learn it is one big home."]
+      ]},
+      {pillar:"roots",title:"Roots & Faith",items:[
+        ["Read Arabic letters","Blend simple letter sounds. Build toward reading words."],
+        ["Memorize 2 to 3 surahs","Steady daily review. Celebrate each one learned."],
+        ["Salah by imitation","Let him stand beside you and copy the movements with joy, no pressure."],
+        ["Akhlaq in friendships","Coach turn-taking, apology, gratitude. Character is taught in conflict."]
+      ]},
+      {pillar:"heart",title:"Heart & Hands",items:[
+        ["Process art","Value the making over the result. Offer materials, not models to copy."],
+        ["Dramatic play","Dress-up, role-play, puppet shows. He works out the world through pretend."],
+        ["Emotion vocabulary","Disappointed, excited, nervous, proud. A rich feelings vocabulary."],
+        ["Rhythm & melody","Learn a few songs by heart, keep a beat, try simple instruments."]
+      ]}
+    ]
+  },
+  {
+    id:"s5", age:"4–5 yrs", name:"The Young Scholar",
+    sub:"Reading readiness, real reasoning, and getting ready for the wider world.",
+    brain:"Reasoning, memory, and attention are strong enough for early reading and math. The goal is a child who loves to learn, not one who is merely ahead.",
+    cols:[
+      {pillar:"lang",title:"Language & Mind",items:[
+        ["Begin to read","Blend sounds into words, read simple decodable books together daily."],
+        ["Write short words","From his name to short words and a label or two. Keep it playful."],
+        ["Math you can touch","Add and subtract with objects, patterns, simple measurement, money play."],
+        ["Think out loud","Ask \"why do you think?\" Reasoning matters more than the right answer."]
+      ]},
+      {pillar:"wonder",title:"Wonder & World",items:[
+        ["The scientific method","Question, guess, test, observe, talk about it. Make it a habit of mind."],
+        ["Deep-dive projects","A multi-day project he chooses, with a small \"presentation\" to family."],
+        ["Nature journaling","Draw what he sees outdoors, label it, return to the same spot over seasons."],
+        ["How the body works","Bones, heart, food, sleep. Care for the body Allah gave him."]
+      ]},
+      {pillar:"roots",title:"Roots & Faith",items:[
+        ["Read short Arabic words","Connect letters into words. The Qur'an becomes readable, not just heard."],
+        ["Surahs & their meaning","Learn what a memorized surah means, in simple words."],
+        ["Salah with understanding","Pray together, talk simply about why we pray and Who we thank."],
+        ["Heritage & identity","Family story, country, language. A proud, grounded sense of who he is."]
+      ]},
+      {pillar:"heart",title:"Heart & Hands",items:[
+        ["Plan a creation","Design before building: draw the plan, then make it. Art meets engineering."],
+        ["Resolve conflict","Give him words to solve disputes himself. Step back when you can."],
+        ["Grit & finishing","Encourage finishing a hard puzzle or drawing. Effort over talent."],
+        ["Perform & share","A song, a dance, a story for the family. Courage and pride together."]
+      ]}
+    ]
+  }
+];
+
+const PILLAR_META = {
+  lang:{name:"Language & Mind",color:"var(--p-lang)"},
+  wonder:{name:"Wonder & World",color:"var(--p-wonder)"},
+  roots:{name:"Roots & Faith",color:"var(--p-roots)"},
+  heart:{name:"Heart & Hands",color:"var(--p-heart)"}
+};
+
+const RHYTHM = [
+  ["7:00","Wake & connect","🌅","roots","Cuddle, open the curtains, say the waking words together: Alhamdulillah. Start the day with calm and warmth before anything else."],
+  ["7:30","Breakfast & table talk","🥣","lang","Sit together. Narrate the meal, name foods in English and Arabic, let him try to feed himself. Mess is learning."],
+  ["8:30","Morning work","🧩","lang","His most focused window. Offer one tray activity (sorting, posting, a puzzle) and let him repeat it as long as he wants."],
+  ["9:30","Outdoor & nature","🌳","wonder","Out in the yard or a walk. Let him lead, crouch low, touch and watch. The single most valuable hour of the day."],
+  ["10:30","Snack & a book","📖","lang","Refuel, then read one or two favorites. Point, name, let him turn the pages and choose."],
+  ["11:00","Independent play","🧸","heart","Step back. Let him play alone near you. Boredom is the doorway to imagination."],
+  ["12:00","Lunch & helping","🍽️","heart","He helps: carry a spoon, wipe the table. Practical life is real, satisfying work for a toddler."],
+  ["12:45","Quiet & nap","😴","roots","Wind down with the sleeping du'a and soft Qur'an. Rest is when the brain files everything it learned."],
+  ["3:00","Sensory or art","🎨","heart","Water, dough, paint, or crayons. Open-ended and messy. Focus on the doing, never the result."],
+  ["4:00","Outdoor again","⚽","wonder","More movement and fresh air. Climb, run, throw, dig. The body leads the growing brain."],
+  ["5:30","Family dinner","👨‍👩‍👦","roots","Eat together, say Bismillah. Conversation at the table is a language and a values lesson at once."],
+  ["7:00","Bath, books & bed","🌙","roots","Bath play, two books, the bedtime du'a, and a soft surah. A predictable close gives him security."]
+];
+
+const ACTIVITIES = [
+  {e:"🥣",t:"Spice jar smelling",p:["wonder","roots"],age:"12mo+",d:"Open your spice jars (sumac, cinnamon, cardamom). Let him smell each. Name them in Arabic and English.",m:"Kitchen spices"},
+  {e:"🧺",t:"Treasure basket",p:["wonder"],age:"12mo+",d:"Fill a basket with safe natural objects: a pinecone, wooden spoon, shell, brush. Let him explore freely.",m:"A basket + safe objects"},
+  {e:"💧",t:"Water pouring station",p:["heart","wonder"],age:"12mo+",d:"Two small cups and a tray. He pours water back and forth. Builds focus, coordination, and volume sense.",m:"Cups, tray, water"},
+  {e:"📦",t:"Posting box",p:["lang","heart"],age:"12mo+",d:"Cut a slot in a box lid. He posts cards, lids, or balls through it. Endless repetition, real concentration.",m:"A box + lids or cards"},
+  {e:"ا",t:"Arabic letter hunt",p:["roots","lang"],age:"2yr+",d:"Pick one letter of the day. Find it on signs, packaging, and the chart. Make it a treasure hunt.",m:"Alphabet chart"},
+  {e:"🎨",t:"Free crayon scribble",p:["heart"],age:"12mo+",d:"Big paper, chunky crayons, zero rules. The grip and the marks are the whole point. Tape paper to the floor.",m:"Paper + chunky crayons"},
+  {e:"🌱",t:"Plant a seed",p:["wonder","roots"],age:"2yr+",d:"Plant a bean in a clear cup. Water it daily, watch it grow. Talk about how Allah makes things grow.",m:"Bean, cup, soil"},
+  {e:"🧸",t:"Feed the doll",p:["heart","lang"],age:"18mo+",d:"Pretend-feed a doll or teddy. Narrate it: 'Teddy is hungry.' Pretend play is deep cognitive work.",m:"A doll + toy spoon"},
+  {e:"🔢",t:"Count the stairs",p:["lang"],age:"18mo+",d:"Count every step out loud as you climb, together. Number sense is built in everyday moments, not flashcards.",m:"Just the stairs"},
+  {e:"🧊",t:"Ice melt watch",p:["wonder"],age:"2yr+",d:"Put an ice cube on a plate. Watch it melt. Talk about what's happening. First lesson in states of matter.",m:"Ice cube + plate"},
+  {e:"🥄",t:"Spoon transfer",p:["heart"],age:"18mo+",d:"Move dried beans or pompoms from one bowl to another with a spoon. Classic Montessori fine-motor work.",m:"2 bowls, spoon, beans"},
+  {e:"🪞",t:"Mirror feelings",p:["heart","lang"],age:"12mo+",d:"At the mirror, make faces together: happy, sad, surprised. Name each feeling. Builds emotional vocabulary.",m:"A mirror"},
+  {e:"🍌",t:"Banana slicing",p:["heart","wonder"],age:"2yr+",d:"With a dull butter knife, he slices a soft banana. Real, useful work that builds focus and confidence.",m:"Banana + dull knife"},
+  {e:"🕌",t:"Surah at bedtime",p:["roots"],age:"12mo+",d:"Recite Al-Ikhlas or play it softly every night. He learns the sound long before the meaning.",m:"Your voice"},
+  {e:"🎵",t:"Pots & pans band",p:["heart","wonder"],age:"12mo+",d:"Pots, a wooden spoon, a steady beat. Make music together. Rhythm wires the language brain.",m:"Pots + spoon"},
+  {e:"🍂",t:"Nature sort",p:["wonder","lang"],age:"18mo+",d:"Collect leaves and stones on a walk. At home, sort them by size or color. Early classification and logic.",m:"A walk + a tray"},
+  {e:"📚",t:"Same book, again",p:["lang"],age:"12mo+",d:"Read his favorite book for the tenth time. Repetition is how toddlers master language. Let him fill in words.",m:"One favorite book"},
+  {e:"🤲",t:"Bismillah & shukr",p:["roots"],age:"12mo+",d:"Say Bismillah before every meal and Alhamdulillah after. Soon he leads it. Gratitude as a daily habit.",m:"Mealtimes"},
+  {e:"🧗",t:"Cushion mountain",p:["heart"],age:"12mo+",d:"Pile cushions for safe climbing and tumbling. Gross-motor play builds the body and the brave brain.",m:"Sofa cushions"},
+  {e:"🎨",t:"Color mixing",p:["wonder","heart"],age:"2yr+",d:"Two colors of paint, let him mix and discover a third. Wonder, cause-and-effect, and art in one.",m:"Washable paint"}
+];
+
+const ALPHABET = [
+  ["ا","Alif","Asad","أسد","lion"],["ب","Ba","Bayt","بيت","house"],["ت","Ta","Tuffah","تفاح","apple"],
+  ["ث","Tha","Tha'lab","ثعلب","fox"],["ج","Jim","Jamal","جمل","camel"],["ح","Ha","Hisan","حصان","horse"],
+  ["خ","Kha","Kharuf","خروف","sheep"],["د","Dal","Dub","دب","bear"],["ذ","Dhal","Dhi'b","ذئب","wolf"],
+  ["ر","Ra","Rumman","رمان","pomegranate"],["ز","Zay","Zarafah","زرافة","giraffe"],["س","Sin","Samak","سمك","fish"],
+  ["ش","Shin","Shams","شمس","sun"],["ص","Sad","Saqr","صقر","falcon"],["ض","Dad","Dafda'","ضفدع","frog"],
+  ["ط","Ta","Ta'ir","طائر","bird"],["ظ","Dha","Dhabi","ظبي","deer"],["ع","Ayn","'Inab","عنب","grapes"],
+  ["غ","Ghayn","Ghazal","غزال","gazelle"],["ف","Fa","Fil","فيل","elephant"],["ق","Qaf","Qamar","قمر","moon"],
+  ["ك","Kaf","Kitab","كتاب","book"],["ل","Lam","Laymun","ليمون","lemon"],["م","Mim","Mawz","موز","banana"],
+  ["ن","Nun","Najmah","نجمة","star"],["ه","Ha","Hudhud","هدهد","hoopoe"],["و","Waw","Ward","ورد","rose"],
+  ["ي","Ya","Yad","يد","hand"]
+];
+
+const WORDS = [
+  ["ماما","Mama","Mom"],["بابا","Baba","Dad"],["تيتا","Teta","Grandma"],["جدو","Jiddo","Grandpa"],
+  ["ماء","Maa'","Water"],["حليب","Haleeb","Milk"],["أكل","Akl","Food"],["خبز","Khubz","Bread"],
+  ["نعم","Na'am","Yes"],["لا","La","No"],["تعال","Ta'al","Come"],["كمان","Kaman","More"],
+  ["كتاب","Kitab","Book"],["حب","Hubb","Love"],["شمس","Shams","Sun"],["قمر","Qamar","Moon"]
+];
+
+const NUMBERS = [
+  ["١","واحد","Wahid","One"],["٢","اثنان","Ithnan","Two"],["٣","ثلاثة","Thalatha","Three"],
+  ["٤","أربعة","Arba'a","Four"],["٥","خمسة","Khamsa","Five"],["٦","ستة","Sitta","Six"],
+  ["٧","سبعة","Sab'a","Seven"],["٨","ثمانية","Thamaniya","Eight"],["٩","تسعة","Tis'a","Nine"],
+  ["١٠","عشرة","'Ashara","Ten"]
+];
+
+const DUAS = [
+  {when:"Before eating",ar:"بِسْمِ اللَّهِ",tl:"Bismillah",en:"In the name of Allah."},
+  {when:"After eating",ar:"الْحَمْدُ لِلَّهِ",tl:"Alhamdulillah",en:"All praise is for Allah."},
+  {when:"When waking",ar:"الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا",tl:"Alhamdulillahi alladhi ahyana",en:"Praise be to Allah who gave us life."},
+  {when:"Before sleeping",ar:"بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",tl:"Bismika Allahumma amutu wa ahya",en:"In Your name, O Allah, I die and I live."},
+  {when:"Greeting",ar:"السَّلَامُ عَلَيْكُمْ",tl:"Assalamu alaykum",en:"Peace be upon you."}
+];
+
+const VALUES = [
+  ["🤲","Gratitude","الشُّكْر","Say Alhamdulillah for food, sun, family. A thankful heart, taught daily."],
+  ["💗","Kindness","الرَّحْمَة","Gentle hands with people, animals, and toys. Name it when you see it."],
+  ["🤝","Sharing","الْمُشَارَكَة","Take turns, give a bite, pass the toy. Generosity is a muscle."],
+  ["🗣️","Honesty","الصِّدْق","Truthful words, always. Praise honesty even when the news is hard."],
+  ["🧎","Respect for parents","بِرُّ الْوَالِدَيْن","Listening, helping, gentle words. The heart of Islamic character."],
+  ["🧼","Cleanliness","الطَّهَارَة","Wash hands, tidy toys, clean up spills. Order outside builds calm inside."],
+  ["⏳","Patience","الصَّبْر","Wait for a turn, breathe through a wait. The seed of self-control."],
+  ["🌍","Love of creation","حُبُّ الْخَلْق","Care for plants, bugs, and water. The world is a trust (amanah)."]
+];
+
+const BOOKS = [
+  ["🐻","Brown Bear, Brown Bear","Bill Martin Jr. · rhythmic, repetitive, colors & animals"],
+  ["🌙","Goodnight Moon","Margaret Wise Brown · the classic calming bedtime read"],
+  ["📦","Dear Zoo","Rod Campbell · lift-the-flap, animals, prediction"],
+  ["🐛","The Very Hungry Caterpillar","Eric Carle · counting, days, food, life cycle"],
+  ["👇","Press Here","Hervé Tullet · interactive, cause & effect, pure joy"],
+  ["👶","Global Babies","The Global Fund for Children · faces of the whole world"],
+  ["🕌","Goodnight Stories from the Qur'an","Saniyasnain Khan · gentle Qur'anic stories"],
+  ["ا","My First Book of Arabic Letters","board-book alphabet with pictures"],
+  ["🌟","The Wonderful World of Allah's Creation","nature & faith for the very young"],
+  ["🚜","Things That Go","first-words picture book of vehicles"]
+];
+
+const SONGS = [
+  ["🐑","Nursery rhymes","Twinkle Twinkle, Wheels on the Bus, Itsy Bitsy Spider. Add the hand actions."],
+  ["ا","Arabic alphabet song","Sing the 28 letters. Tap them in the corner above as you go."],
+  ["🌙","Simple nasheeds","Soft, repetitive nasheeds about Allah, the Prophet ﷺ, and good manners."],
+  ["👏","Counting songs","Five Little Ducks, 1-2-3-4-5 Once I Caught a Fish. Counting + rhythm."],
+  ["🎻","Classical listening","Play a little Mozart or oud during calm play. Rich sound feeds the ear."],
+  ["🤲","Du'a songs","Melodic versions of short du'as make them effortless to memorize."]
+];
+
+const ENV = [
+  ["🪑","Child-height everything","A low shelf, a small table and chair, hooks he can reach. When the room fits him, he can do it himself."],
+  ["🧺","Few toys, rotated","Display 6 to 8 toys, not 60. Store the rest and rotate weekly. Less clutter, deeper play."],
+  ["🪞","A low mirror","A safe mirror at his level for self-recognition, movement, and naming body parts."],
+  ["🌿","A nature corner","A basket of natural objects, a plant to water, a window to the outdoors."],
+  ["ا","Arabic on the walls","An alphabet chart and family photos at his eye level. Print as part of the everyday landscape."],
+  ["📚","Front-facing books","A few books with covers showing, within reach. He will choose and 'read' on his own."]
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const pip=c=>`<span class="pip" style="background:${c}"></span>`;
+
+/* ---- precise age ---- */
+(function(){
+  const dob=new Date(2025,3,11); // 11 Apr 2025
+  const now=new Date();
+  let m=(now.getFullYear()-dob.getFullYear())*12+(now.getMonth()-dob.getMonth());
+  if(now.getDate()<dob.getDate())m--;
+  $("#ageNow").textContent=m+" months";
+})();
+
+/* ---- stages ---- */
+const tabsEl=$("#stageTabs"), panelEl=$("#stagePanel");
+STAGES.forEach((s,i)=>{
+  const b=document.createElement("button");
+  b.className="stage-tab"+(s.now?" active":"");
+  b.dataset.i=i;
+  b.innerHTML=`<span class="age">${s.age}</span><span class="nm">${s.name}</span>${s.now?'<span class="now">You are here</span>':''}`;
+  b.onclick=()=>{$$(".stage-tab").forEach(t=>t.classList.remove("active"));b.classList.add("active");renderStage(i);};
+  tabsEl.appendChild(b);
+});
+function renderStage(i){
+  const s=STAGES[i];
+  panelEl.innerHTML=`
+    <div class="stage-head">
+      <div><h3>${s.age} · ${s.name}</h3><div class="sub">${s.sub}</div></div>
+      <div class="brain-note"><b>What's developing:</b> ${s.brain}</div>
+    </div>
+    <div class="stage-cols">
+      ${s.cols.map(c=>`
+        <div class="scol">
+          <h5><span class="pip" style="background:${PILLAR_META[c.pillar].color}"></span>${c.title}</h5>
+          <ul>${c.items.map(it=>`<li><b>${it[0]}.</b> ${it[1]}</li>`).join("")}</ul>
+        </div>`).join("")}
+    </div>`;
+}
+renderStage(STAGES.findIndex(s=>s.now));
+
+/* ---- rhythm ---- */
+const rh=$("#rhythm");
+RHYTHM.forEach(([time,title,emoji,p,desc],idx)=>{
+  const d=document.createElement("div");
+  d.className="rblock"+(idx===0?" open":"");
+  d.innerHTML=`<div class="rtime">${time}</div>
+    <div class="rbody">
+      <div class="rtop"><h5><span class="emoji">${emoji}</span>${title}</h5>
+      <span class="pill-tag" style="background:${PILLAR_META[p].color}1f;color:${PILLAR_META[p].color}">${PILLAR_META[p].name}</span></div>
+      <p>${desc}</p>
+    </div>`;
+  d.onclick=()=>d.classList.toggle("open");
+  rh.appendChild(d);
+});
+
+/* ---- activities ---- */
+const grid=$("#actGrid");
+function renderActs(filter="all"){
+  grid.innerHTML="";
+  ACTIVITIES.filter(a=>filter==="all"||a.p.includes(filter)).forEach(a=>{
+    const main=a.p[0];
+    const c=PILLAR_META[main].color;
+    const el=document.createElement("div");
+    el.className="act";
+    el.innerHTML=`<div class="bar" style="background:${c}"></div>
+      <div class="a-head"><span class="a-emoji">${a.e}</span><span class="a-age">${a.age}</span></div>
+      <h4>${a.t}</h4><p>${a.d}</p>
+      <div class="a-mat"><b>You need:</b> ${a.m} &nbsp;·&nbsp; <span class="a-pill" style="color:${c}">${PILLAR_META[main].name}</span></div>`;
+    grid.appendChild(el);
+  });
+}
+renderActs();
+$$("#filters .chip").forEach(ch=>ch.onclick=()=>{
+  $$("#filters .chip").forEach(c=>c.classList.remove("active"));
+  ch.classList.add("active");renderActs(ch.dataset.f);
+});
+$("#surprise").onclick=()=>{
+  $$("#filters .chip").forEach(c=>c.classList.remove("active"));
+  $('[data-f="all"]').classList.add("active");
+  renderActs("all");
+  const cards=$$(".act"),pick=cards[Math.floor(Math.random()*cards.length)];
+  pick.scrollIntoView({behavior:"smooth",block:"center"});
+  pick.classList.remove("flash");void pick.offsetWidth;pick.classList.add("flash");
+};
+
+/* ---- arabic tabs ---- */
+$$(".ar-tab").forEach(t=>t.onclick=()=>{
+  $$(".ar-tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");
+  $$(".ar-pane").forEach(p=>p.classList.remove("active"));
+  $(`[data-pane="${t.dataset.p}"]`).classList.add("active");
+});
+/* alphabet */
+const ag=$("#alphaGrid"), det=$("#letterDetail");
+function showLetter(L){
+  $$(".letter").forEach(x=>x.classList.remove("sel"));
+  ag.querySelector(`[data-l="${L[1]}"]`).classList.add("sel");
+  det.innerHTML=`<div class="big">${L[0]}</div>
+    <div class="info"><h4>${L[1]}</h4><div class="tl">sounds like "${L[1]}"</div>
+    <div class="word"><b>${L[3]}</b> ${L[2]} <span style="color:var(--muted)">(${L[4]})</span></div></div>`;
+}
+ALPHABET.forEach(L=>{
+  const b=document.createElement("button");
+  b.className="letter";b.dataset.l=L[1];
+  b.innerHTML=`<span class="ar">${L[0]}</span><span class="nm">${L[1]}</span>`;
+  b.onclick=()=>showLetter(L);
+  ag.appendChild(b);
+});
+showLetter(ALPHABET[0]);
+/* words */
+$("#wordsGrid").innerHTML=WORDS.map(w=>`<div class="mini"><div class="ar">${w[0]}</div><div class="tl">${w[1]}</div><div class="en">${w[2]}</div></div>`).join("");
+/* numbers */
+$("#numGrid").innerHTML=NUMBERS.map(n=>`<div class="mini"><div class="ar">${n[0]} &nbsp; ${n[1]}</div><div class="tl">${n[2]}</div><div class="en">${n[3]}</div></div>`).join("");
+/* duas */
+$("#duasWrap").innerHTML=DUAS.map(d=>`<div class="dua"><div class="when">${d.when}</div><div class="ar">${d.ar}</div><div class="tl">${d.tl}</div><div class="en">${d.en}</div></div>`).join("");
+/* values */
+$("#valuesGrid").innerHTML=VALUES.map(v=>`<div class="value"><div class="e">${v[0]}</div><h5>${v[1]}<b>${v[2]}</b></h5><p>${v[3]}</p></div>`).join("");
+
+/* ---- milestones ---- */
+const DOMAINS=[
+  {n:"Movement (Motor)",e:"🏃",items:["Walks well on his own","Climbs onto a low chair or sofa","Stacks 2 to 4 blocks","Scribbles with a crayon","Drinks from an open cup","Walks up stairs with help","Kicks or throws a ball","Begins to run"]},
+  {n:"Language & Mind",e:"💬",items:["Says 3+ clear words","Points to things he wants","Follows a simple instruction","Points to a body part when named","Says 10+ words","Points to pictures in a book","Tries 2-word phrases","Knows names of familiar people"]},
+  {n:"Thinking (Cognitive)",e:"🧠",items:["Finds a hidden toy","Sorts shapes into a sorter","Copies you (sweeping, talking on phone)","Scribbles spontaneously","Follows a 2-step request","Begins simple pretend play","Stacks a small tower","Explores how things work"]},
+  {n:"Heart (Social & Emotional)",e:"💗",items:["Shows affection (hugs, kisses)","Plays alongside others","Shows a clear preference","Hands you a book to read","Claps or shows when proud","Begins to name a feeling","Comforts a toy or person","Waves and says bye"]},
+  {n:"Roots & Faith",e:"🕌",items:["Recognizes the sound of Qur'an","Copies 'Bismillah' or 'Alhamdulillah'","Uses 1 to 2 Arabic words","Waves to 'Assalamu alaykum'","Enjoys the alphabet song","Recognizes 1 to 2 Arabic letters","Joins a short du'a by routine","Imitates prayer movements"]}
+];
+const msWrap=$("#msDomains");
+function loadMs(){try{return JSON.parse(localStorage.getItem("zayn_ms")||"{}")}catch(e){return {}}}
+function saveMs(o){localStorage.setItem("zayn_ms",JSON.stringify(o))}
+let msState=loadMs();
+function renderMs(){
+  msWrap.innerHTML="";
+  let total=0,done=0;
+  DOMAINS.forEach((dm,di)=>{
+    let dDone=0;
+    const checks=dm.items.map((it,ii)=>{
+      const key=`${di}-${ii}`;const on=!!msState[key];
+      total++;if(on){done++;dDone++}
+      return `<label class="check"><input type="checkbox" data-k="${key}" ${on?"checked":""}>
+        <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg></span>
+        <span class="lbl">${it}</span></label>`;
+    }).join("");
+    msWrap.innerHTML+=`<div class="domain"><h4>${dm.e} ${dm.n}</h4><span class="dcount">${dDone} of ${dm.items.length}</span>${checks}</div>`;
+  });
+  $$(".check input").forEach(c=>c.onchange=()=>{msState[c.dataset.k]=c.checked;saveMs(msState);updateRing();});
+  updateRing(total,done);
+}
+function updateRing(total,done){
+  if(total===undefined){total=0;done=0;DOMAINS.forEach((d,di)=>d.items.forEach((x,ii)=>{total++;if(msState[`${di}-${ii}`])done++}));}
+  const pct=total?Math.round(done/total*100):0;
+  $("#ring").style.setProperty("--p",pct);
+  $("#ringPct").textContent=pct+"%";
+  const T=$("#msTitle"),S=$("#msSub");
+  if(pct===0){T.textContent="Just getting started";S.textContent="Check off what Zayn is already doing. Watch the ring fill.";}
+  else if(pct<34){T.textContent="On his way 🌱";S.textContent=`${done} milestones and counting. Keep playing, keep talking.`;}
+  else if(pct<67){T.textContent="Blossoming 🌿";S.textContent=`${done} milestones. He is growing beautifully, right on his own clock.`;}
+  else if(pct<100){T.textContent="Thriving 🌳";S.textContent=`${done} milestones. Look how far he has come.`;}
+  else{T.textContent="Mashallah, what a journey 🌟";S.textContent="Every milestone checked. Time to grow into the next stage.";}
+}
+renderMs();
+$("#resetBtn").onclick=()=>{if(confirm("Reset all milestone progress for Zayn?")){msState={};saveMs(msState);renderMs();}};
+
+/* ---- books / songs / env ---- */
+$("#bookList").innerHTML=BOOKS.map(b=>`<div class="litem"><span class="li-e">${b[0]}</span><div><div class="li-t">${b[1]}</div><div class="li-s">${b[2]}</div></div></div>`).join("");
+$("#songList").innerHTML=SONGS.map(s=>`<div class="litem"><span class="li-e">${s[0]}</span><div><div class="li-t">${s[1]}</div><div class="li-s">${s[2]}</div></div></div>`).join("");
+$("#envGrid").innerHTML=ENV.map(e=>`<div class="env"><div class="e">${e[0]}</div><h4>${e[1]}</h4><p>${e[2]}</p></div>`).join("");
+
+/* ---- weekly planner ---- */
+const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const PILLAR_KEYS=["lang","wonder","roots","heart"];
+const SWAP_ICON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>';
+const allIdx=ACTIVITIES.map((_,i)=>i);
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+const actsBy=p=>allIdx.filter(i=>ACTIVITIES[i].p.includes(p));
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function buildWeek(){
+  let bag=[...PILLAR_KEYS];while(bag.length<7)bag.push(rand(PILLAR_KEYS));bag=shuffle(bag);
+  const used=new Set();
+  const pick=pool=>{const fresh=pool.filter(i=>!used.has(i));const c=rand(fresh.length?fresh:pool);used.add(c);return c;};
+  return DAYS.map((d,i)=>{const focus=bag[i];const a1=pick(actsBy(focus));
+    let a2=pick(allIdx);let g=0;while(a2===a1&&g++<8)a2=rand(allIdx);
+    return {date:"",focus,a1,a2,book:i%BOOKS.length};});
+}
+const pgrid=$("#plannerGrid");
+function loadWeek(){try{const w=JSON.parse(localStorage.getItem("zayn_week"));if(Array.isArray(w)&&w.length===7)return w;}catch(e){}return null;}
+function saveWeek(){localStorage.setItem("zayn_week",JSON.stringify(week));}
+let week=loadWeek()||buildWeek();
+function actSlot(di,key,idx){const a=ACTIVITIES[idx];
+  return `<div class="slot"><span class="se">${a.e}</span><span class="st">${a.t}<small>${a.m}</small></span>
+    <button class="swap" data-d="${di}" data-k="${key}" title="Swap">${SWAP_ICON}</button></div>`;}
+function bookSlot(di,idx){const b=BOOKS[idx];
+  return `<div class="slot"><span class="se">${b[0]}</span><span class="st">Read: ${b[1]}</span>
+    <button class="swap" data-d="${di}" data-k="book" title="Swap">${SWAP_ICON}</button></div>`;}
+function renderWeek(){
+  pgrid.innerHTML=week.map((day,di)=>{const fc=PILLAR_META[day.focus];
+    return `<div class="day-card">
+      <div class="dh"><span class="dname">${DAYS[di]}</span>
+        <input class="ddate" data-d="${di}" value="${(day.date||'').replace(/"/g,'')}" placeholder="date" maxlength="6"></div>
+      <span class="focus-chip" style="background:${fc.color}22;color:${fc.color}">${fc.name}</span>
+      ${actSlot(di,'a1',day.a1)}${actSlot(di,'a2',day.a2)}${bookSlot(di,day.book)}
+      <div class="win"><div class="wl">Today's win 🌟</div><div class="wline"></div></div>
+    </div>`;}).join("");
+  $$(".swap",pgrid).forEach(b=>b.onclick=()=>{
+    const di=+b.dataset.d,key=b.dataset.k,day=week[di];
+    if(key==="book"){day.book=(day.book+1)%BOOKS.length;}
+    else{const pool=key==="a1"?actsBy(day.focus):allIdx;
+      let c=rand(pool),g=0;while((c===day.a1||c===day.a2)&&g++<10)c=rand(pool);day[key]=c;}
+    saveWeek();renderWeek();
+  });
+  $$(".ddate",pgrid).forEach(inp=>inp.onchange=()=>{week[+inp.dataset.d].date=inp.value;saveWeek();});
+}
+renderWeek();
+$("#genWeek").onclick=()=>{week=buildWeek();saveWeek();renderWeek();};
+$("#printWeek").onclick=()=>{document.body.classList.add("print-planner");window.print();};
+addEventListener("afterprint",()=>document.body.classList.remove("print-planner"));
+
+/* ---- nav, theme, reveal ---- */
+const nav=$("#nav");
+addEventListener("scroll",()=>nav.classList.toggle("scrolled",scrollY>10),{passive:true});
+$("#menuBtn").onclick=()=>$("#navlinks").classList.toggle("open");
+$$("#navlinks a").forEach(a=>a.onclick=()=>$("#navlinks").classList.remove("open"));
+
+/* theme */
+const root=document.documentElement, tIco=$("#themeIco");
+const moon=`<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>`;
+const sun=`<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>`;
+function setTheme(t){root.setAttribute("data-theme",t);tIco.innerHTML=t==="dark"?sun:moon;localStorage.setItem("zayn_theme",t);}
+const saved=localStorage.getItem("zayn_theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+setTheme(saved);
+$("#themeBtn").onclick=()=>setTheme(root.getAttribute("data-theme")==="dark"?"light":"dark");
+
+/* reveal on scroll */
+if(!matchMedia("(prefers-reduced-motion:reduce)").matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.12});
+  $$(".reveal").forEach(el=>io.observe(el));
+}else{$$(".reveal").forEach(el=>el.classList.add("in"));}
+</script>
+</body>
+</html>

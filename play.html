@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Zayn's Play & Learn</title>
+<meta name="description" content="A talking, tappable first-words game for Zayn — words spoken in Baba's own voice. Built for iPad + Apple Pencil." />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Zayn" />
+<meta name="theme-color" content="#2F6B4F" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Nunito+Sans:opsz,wght@6..12,600;6..12,700;6..12,800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ZAYN'S PLAY & LEARN — child-facing companion to index.html
+   Shares the curriculum palette. Built for touch + Apple Pencil.
+   Words are spoken from RECORDED CLIPS (Baba's voice) when present,
+   falling back to device speech only if a word hasn't been recorded.
+   Hardened against the iOS speech-engine crash.
+   ============================================================ */
+:root{
+  --bg:#F3F6EE; --surface:#FFFFFF; --ink:#23291E; --muted:#5C6552;
+  --green:#2F6B4F; --green-deep:#22503B; --green-soft:#E6EFE7;
+  --p-lang:#D9694A; --p-wonder:#2C8C8C; --p-roots:#367A56; --p-heart:#D99A2B;
+  --shadow:0 18px 40px rgba(35,41,30,.14), 0 6px 14px rgba(35,41,30,.08);
+  --shadow-sm:0 6px 16px rgba(35,41,30,.10);
+  --font-d:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-b:'Nunito Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-ar:'Amiri',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--font-b);background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:none;}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;
+  padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right))
+          max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));}
+.screen.on{display:flex;}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+
+/* ---------- splash ---------- */
+#splash{align-items:center;justify-content:center;text-align:center;gap:26px;z-index:30;
+  background:radial-gradient(120% 120% at 50% 30%, #fff 0%, var(--bg) 70%);}
+#splash .logo{font-size:clamp(84px,22vw,180px);line-height:1;filter:drop-shadow(0 12px 24px rgba(0,0,0,.12));
+  animation:floaty 3.4s ease-in-out infinite;}
+#splash h1{font-size:clamp(34px,8vw,68px);color:var(--green-deep);}
+#splash p{font-size:clamp(16px,3.6vw,22px);color:var(--muted);max-width:24ch;}
+.bigtap{font-family:var(--font-d);font-weight:800;font-size:clamp(20px,5vw,30px);color:#fff;
+  background:linear-gradient(135deg,var(--green),#4f9a73);border:none;border-radius:999px;
+  padding:22px 44px;box-shadow:var(--shadow);cursor:pointer;animation:pulse 2s ease-in-out infinite;}
+.bigtap:active{transform:scale(.95)}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-16px) rotate(2deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.gearhint{position:absolute;bottom:14px;right:16px;font-size:13px;color:var(--muted);opacity:.5}
+
+/* ---------- home ---------- */
+#home{gap:14px;}
+.topbar{display:flex;align-items:center;gap:12px;z-index:2;}
+.topbar h2{font-size:clamp(22px,5vw,34px);color:var(--green-deep);flex:1;}
+.iconbtn{width:58px;height:58px;flex:none;border:none;border-radius:20px;background:var(--surface);
+  box-shadow:var(--shadow-sm);font-size:26px;display:grid;place-items:center;cursor:pointer;color:var(--ink);}
+.iconbtn:active{transform:scale(.92)}
+.iconbtn.small{width:46px;height:46px;font-size:20px;border-radius:15px}
+.gear{opacity:.4}
+.moderow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 2px;z-index:2;}
+.mode{border:none;border-radius:26px;padding:22px 16px;cursor:pointer;color:#fff;display:flex;
+  flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow-sm);font-family:var(--font-d);
+  font-weight:800;font-size:clamp(15px,2.4vw,20px);transition:transform .12s;}
+.mode:active{transform:scale(.95)}
+.mode .ico{font-size:clamp(36px,7vw,56px);line-height:1}
+.mode.tap{background:linear-gradient(140deg,var(--p-wonder),#3aa6a6)}
+.mode.find{background:linear-gradient(140deg,var(--p-lang),#e07e5f)}
+.mode.draw{background:linear-gradient(140deg,var(--p-heart),#e6ad48)}
+.themelabel{font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin:8px 2px 0;z-index:2;}
+.themegrid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:start;overflow:hidden;z-index:2;}
+.theme{border:2px solid transparent;border-radius:22px;background:var(--surface);box-shadow:var(--shadow-sm);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:14px 8px;transition:transform .12s,border-color .15s;}
+.theme:active{transform:scale(.94)}
+.theme.sel{border-color:var(--green)}
+.theme .e{font-size:clamp(30px,6vw,46px);line-height:1}
+.theme .n{font-family:var(--font-d);font-weight:700;font-size:clamp(12px,2vw,15px);color:var(--ink)}
+
+/* ---------- play area ---------- */
+.play{flex:1;display:flex;flex-direction:column;z-index:2;min-height:0;}
+.playtop{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.prompt{flex:1;text-align:center;font-family:var(--font-d);font-weight:800;
+  font-size:clamp(22px,5.2vw,40px);color:var(--green-deep);min-height:1.2em;}
+.prompt .ar{font-family:var(--font-ar);}
+.stars{display:flex;gap:6px;font-size:26px;justify-content:center;margin-bottom:8px}
+.star{opacity:.22;transition:opacity .3s,transform .3s;}
+.star.lit{opacity:1;transform:scale(1.15)}
+.cards{flex:1;display:grid;gap:14px;place-content:center;min-height:0;}
+.cards.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cards.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{position:relative;border:none;border-radius:30px;background:var(--surface);box-shadow:var(--shadow);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:10px;aspect-ratio:1/1;max-height:38vh;max-width:38vh;margin:auto;width:100%;transition:transform .14s cubic-bezier(.16,1,.3,1);}
+.card:active{transform:scale(.95)}
+.card .emoji{font-size:clamp(54px,15vh,150px);line-height:1;filter:drop-shadow(0 8px 14px rgba(0,0,0,.10))}
+.card .swatch{width:62%;aspect-ratio:1.6/1;border-radius:20px;box-shadow:inset 0 -6px 14px rgba(0,0,0,.12)}
+.card .word{font-family:var(--font-d);font-weight:800;font-size:clamp(18px,3.4vw,30px);color:var(--ink)}
+.card .word .ar{font-family:var(--font-ar);color:var(--green-deep);display:block;font-size:1.05em}
+.card.pop{animation:pop .5s ease}
+.card.right{animation:right .6s ease}
+.card.wrong{animation:wrong .5s ease}
+.card.dim{opacity:.32;transform:scale(.92);pointer-events:none}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes right{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(3deg)}60%{transform:scale(1.1) rotate(-3deg)}100%{transform:scale(1.1)}}
+@keyframes wrong{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+
+.hint{position:fixed;font-size:54px;pointer-events:none;z-index:25;opacity:0;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));transition:opacity .3s;}
+.hint.on{opacity:1;animation:tapbob 1s ease-in-out infinite}
+@keyframes tapbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* ---------- magic pencil ---------- */
+#draw{padding:0;}
+#draw .drawbar{position:absolute;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;align-items:center;z-index:5;background:rgba(255,255,255,.86);backdrop-filter:blur(8px);
+  padding:8px;border-radius:999px;box-shadow:var(--shadow-sm);}
+.swbtn{width:44px;height:44px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:var(--shadow-sm)}
+.swbtn.sel{outline:3px solid var(--green);outline-offset:2px}
+#padCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;background:#fff}
+.drawhome{position:absolute;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:6}
+.drawclear{position:absolute;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:6}
+
+/* ---------- celebration ---------- */
+#cele{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;text-align:center;background:rgba(243,246,238,.78);backdrop-filter:blur(4px);}
+#cele.on{display:flex;animation:fadein .4s ease}
+#cele .big{font-size:clamp(90px,24vw,200px);animation:floaty 2.4s ease-in-out infinite;line-height:1}
+#cele h1{font-size:clamp(34px,9vw,72px);color:var(--green-deep)}
+#cele p{font-size:clamp(18px,4vw,26px);color:var(--muted)}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+#fx{position:fixed;inset:0;z-index:45;pointer-events:none}
+
+/* ---------- grown-up record screen ---------- */
+#rec{background:var(--bg);z-index:35;gap:12px;overflow:hidden}
+#rec .rectop{display:flex;align-items:center;gap:12px}
+#rec .rectop h2{flex:1;font-size:clamp(20px,4.4vw,28px);color:var(--green-deep)}
+.recnote{font-size:14px;color:var(--muted);line-height:1.5;background:var(--green-soft);padding:12px 14px;border-radius:14px}
+.recnote b{color:var(--green-deep)}
+.recbanner{display:none;font-size:14px;color:#fff;background:var(--p-lang);padding:12px 14px;border-radius:14px;line-height:1.5}
+.recbanner.on{display:block}
+.reclist{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:6px;padding-right:4px}
+.recgrouphdr{font-family:var(--font-d);font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:10px 2px 2px}
+.recrow{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:14px;padding:8px 12px;box-shadow:var(--shadow-sm)}
+.recrow .re{font-size:30px;width:40px;text-align:center}
+.recrow .rw{flex:1;font-family:var(--font-d);font-weight:700;font-size:17px}
+.recrow .rw .ar{font-family:var(--font-ar);color:var(--green-deep);margin-left:6px}
+.recrow .rok{color:var(--green);font-weight:800;font-size:18px;width:24px;text-align:center}
+.rbtn{border:none;border-radius:999px;padding:9px 16px;font-family:var(--font-d);font-weight:700;font-size:14px;cursor:pointer;color:#fff;background:var(--green)}
+.rbtn.rec{background:var(--p-lang)}
+.rbtn.recording{background:#c0392b;animation:pulse 1s infinite}
+.rbtn.ghost{background:var(--surface);color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
+.rbtn:active{transform:scale(.95)}
+.recbar{display:flex;gap:10px}
+.recbar .rbtn{flex:1;text-align:center;padding:14px}
+
+/* guided big recorder overlay */
+#guide{position:fixed;inset:0;z-index:38;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  background:var(--bg);padding:24px;text-align:center}
+#guide.on{display:flex}
+#guide .gcard{width:min(70vw,46vh);aspect-ratio:1/1;background:var(--surface);border-radius:36px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+#guide .gcard .ge{font-size:clamp(70px,20vh,170px)}
+#guide .gcard .gw{font-family:var(--font-d);font-weight:800;font-size:clamp(24px,5vw,40px)}
+#guide .gcard .gw .ar{font-family:var(--font-ar);color:var(--green-deep);display:block}
+#guide .gsay{font-size:clamp(16px,3.4vw,22px);color:var(--muted)}
+#guide .gprog{font-family:var(--font-d);font-weight:700;color:var(--green-deep)}
+.bigmic{font-family:var(--font-d);font-weight:800;font-size:clamp(18px,4.4vw,26px);color:#fff;border:none;border-radius:999px;
+  padding:20px 40px;box-shadow:var(--shadow);cursor:pointer;background:linear-gradient(135deg,var(--p-lang),#e07e5f)}
+.bigmic.recording{background:#c0392b;animation:pulse 1s infinite}
+.bigmic:active{transform:scale(.96)}
+.guiderow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+
+@media(min-width:1100px){ .moderow{max-width:760px;margin:6px auto 2px} .themegrid{grid-template-columns:repeat(5,1fr)} }
+@media(max-height:560px){ .card{max-height:46vh} }
+</style>
+</head>
+<body>
+
+<!-- ===================== SPLASH ===================== -->
+<section class="screen on" id="splash">
+  <div class="logo">🐣</div>
+  <h1>Zayn's Play &amp; Learn</h1>
+  <p>Tap pictures, hear the words, draw with your pencil.</p>
+  <button class="bigtap" id="startBtn">Let's Play! 🎈</button>
+  <div class="gearhint">Grown-ups: tap the ⚙️ on the next screen to record your voice</div>
+</section>
+
+<!-- ===================== HOME ===================== -->
+<section class="screen" id="home">
+  <div class="topbar">
+    <h2>Hi Zayn! 👋</h2>
+    <button class="iconbtn small gear" id="gearBtn" title="Grown-up settings" aria-label="Grown-up settings">⚙️</button>
+  </div>
+  <div class="moderow">
+    <button class="mode tap"  data-mode="tap"><span class="ico">👆</span>Tap &amp; Hear</button>
+    <button class="mode find" data-mode="find"><span class="ico">🔎</span>Find It!</button>
+    <button class="mode draw" data-mode="draw"><span class="ico">✏️</span>Magic Pencil</button>
+  </div>
+  <div class="themelabel">Pick what to learn</div>
+  <div class="themegrid" id="themeGrid"></div>
+</section>
+
+<!-- ===================== GAME (Tap & Hear + Find It) ===================== -->
+<section class="screen" id="game">
+  <div class="play">
+    <div class="playtop">
+      <button class="iconbtn" id="gameHome">🏠</button>
+      <div class="prompt" id="prompt"></div>
+      <button class="iconbtn" id="gameSpeak">🔊</button>
+    </div>
+    <div class="stars" id="stars" style="display:none"></div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<!-- ===================== MAGIC PENCIL ===================== -->
+<section class="screen" id="draw">
+  <canvas id="padCanvas"></canvas>
+  <button class="iconbtn drawhome" id="drawHome">🏠</button>
+  <button class="iconbtn drawclear" id="drawClear">🧽</button>
+  <div class="drawbar" id="drawBar"></div>
+</section>
+
+<!-- ===================== GROWN-UP RECORD ===================== -->
+<section class="screen" id="rec">
+  <div class="rectop">
+    <button class="iconbtn small" id="recHome">🏠</button>
+    <h2>🎙️ Record your voice</h2>
+  </div>
+  <div class="recnote" id="recNote">
+    Record each word in <b>your own voice</b> so Zayn hears <b>you</b> say it.
+    Tap <b>Record</b>, say the word once, tap <b>Stop</b>. Use <b>Record all</b> to go through them quickly.
+  </div>
+  <div class="recbanner" id="recBanner"></div>
+  <div class="recbar">
+    <button class="rbtn" id="guidedBtn">▶︎ Record all (guided)</button>
+    <button class="rbtn ghost" id="exportBtn">⤓ Save voice pack</button>
+  </div>
+  <div class="reclist" id="recList"></div>
+</section>
+
+<!-- guided big recorder -->
+<div id="guide">
+  <div class="gprog" id="gProg"></div>
+  <div class="gcard" id="gCard"></div>
+  <div class="gsay" id="gSay">Tap the mic and say it once</div>
+  <div class="guiderow">
+    <button class="iconbtn" id="gPrev">⬅︎</button>
+    <button class="bigmic" id="gMic">🎙️ Record</button>
+    <button class="iconbtn" id="gPlay">▶︎</button>
+    <button class="iconbtn" id="gNext">➡︎</button>
+  </div>
+  <button class="rbtn ghost" id="gDone" style="padding:12px 28px">Done</button>
+</div>
+
+<!-- celebration -->
+<div id="cele">
+  <div class="big" id="celeBig">🌟</div>
+  <h1 id="celeH">Great job, Zayn!</h1>
+  <p id="celeP">Tap to keep playing</p>
+</div>
+<canvas id="fx"></canvas>
+<div class="hint" id="hint">👇</div>
+
+<script>
+"use strict";
+/* =====================================================================
+   DATA — themes. Emoji is the artwork. `ar` = Arabic name (Roots/Faith).
+   `sw` = a color swatch instead of emoji. Each item gets a stable `key`.
+   ===================================================================== */
+const THEMES = [
+  { id:'animals', name:'Animals', icon:'🐶', items:[
+    {e:'🐶',w:'Dog'},{e:'🐱',w:'Cat',ar:'قِطّة'},{e:'🐮',w:'Cow'},{e:'🦆',w:'Duck'},
+    {e:'🐟',w:'Fish'},{e:'🐦',w:'Bird'},{e:'🐘',w:'Elephant'},{e:'🦁',w:'Lion'},
+    {e:'🐵',w:'Monkey'},{e:'🐝',w:'Bee'},{e:'🐑',w:'Sheep'},{e:'🐴',w:'Horse'},
+  ]},
+  { id:'food', name:'Food', icon:'🍎', items:[
+    {e:'🍎',w:'Apple'},{e:'🍌',w:'Banana'},{e:'🥛',w:'Milk',ar:'حليب'},{e:'🍞',w:'Bread'},
+    {e:'🥚',w:'Egg'},{e:'🍇',w:'Grapes'},{e:'💧',w:'Water',ar:'ماء'},{e:'🧀',w:'Cheese'},
+    {e:'🍓',w:'Berry'},{e:'🥕',w:'Carrot'},{e:'🍪',w:'Cookie'},{e:'🍊',w:'Orange'},
+  ]},
+  { id:'go', name:'Things that Go', icon:'🚗', items:[
+    {e:'🚗',w:'Car'},{e:'🚌',w:'Bus'},{e:'✈️',w:'Plane'},{e:'🚢',w:'Boat'},
+    {e:'🚂',w:'Train'},{e:'🚲',w:'Bike'},{e:'🚒',w:'Truck'},{e:'🚁',w:'Helicopter'},
+  ]},
+  { id:'home', name:'Things at Home', icon:'🧸', items:[
+    {e:'⚽',w:'Ball'},{e:'📕',w:'Book',ar:'كِتاب'},{e:'🥤',w:'Cup'},{e:'👟',w:'Shoe'},
+    {e:'🧢',w:'Hat'},{e:'🔑',w:'Key'},{e:'🥄',w:'Spoon'},{e:'🪑',w:'Chair'},
+    {e:'🧸',w:'Teddy'},{e:'🛏️',w:'Bed'},{e:'🪥',w:'Toothbrush'},{e:'💡',w:'Light'},
+  ]},
+  { id:'body', name:'Me & My Family', icon:'👋', items:[
+    {e:'👋',w:'Hand',ar:'يَد'},{e:'👁️',w:'Eye',ar:'عَيْن'},{e:'👃',w:'Nose'},{e:'👂',w:'Ear'},
+    {e:'🦶',w:'Foot'},{e:'👄',w:'Mouth'},{e:'👶',w:'Baby'},{e:'👩',w:'Mama',ar:'ماما'},
+    {e:'👨',w:'Baba',ar:'بابا'},{e:'🦷',w:'Tooth'},{e:'💇',w:'Hair'},{e:'❤️',w:'Heart'},
+  ]},
+  { id:'colors', name:'Colors', icon:'🌈', items:[
+    {sw:'#E23B3B',w:'Red'},{sw:'#F4A92B',w:'Orange'},{sw:'#F4D03F',w:'Yellow'},
+    {sw:'#3FAE5A',w:'Green'},{sw:'#3B82E2',w:'Blue'},{sw:'#8E5BD9',w:'Purple'},
+    {sw:'#E86FB0',w:'Pink'},{sw:'#7A4B2A',w:'Brown'},
+  ]},
+  { id:'nature', name:'Sky & Nature', icon:'☀️', items:[
+    {e:'☀️',w:'Sun',ar:'شَمْس'},{e:'🌙',w:'Moon',ar:'قَمَر'},{e:'⭐',w:'Star',ar:'نَجْمة'},
+    {e:'☁️',w:'Cloud'},{e:'🌧️',w:'Rain'},{e:'🌳',w:'Tree',ar:'شَجَرة'},
+    {e:'🌸',w:'Flower'},{e:'🔥',w:'Fire'},{e:'❄️',w:'Snow'},{e:'🌊',w:'Wave'},
+  ]},
+  { id:'arabic', name:'Arabic First Words', icon:'☪️', items:[
+    {e:'🤲',w:'Bismillah',ar:'بِسْمِ الله'},{e:'🕌',w:'Masjid',ar:'مَسْجِد'},
+    {e:'☀️',w:'Shams',ar:'شَمْس'},{e:'🌙',w:'Qamar',ar:'قَمَر'},
+    {e:'💧',w:'Maa',ar:'ماء'},{e:'🐱',w:'Qittah',ar:'قِطّة'},
+    {e:'📖',w:'Kitab',ar:'كِتاب'},{e:'⭐',w:'Najmah',ar:'نَجْمة'},
+    {e:'🤝',w:'Salaam',ar:'سَلام'},{e:'❤️',w:'Hubb',ar:'حُبّ'},
+  ]},
+];
+// special spoken phrases (praise) we also let Baba record
+const PHRASES = [
+  {key:'hi', w:'Hi Zayn!'}, {key:'tap', w:'Tap a picture'},
+  {key:'great', w:'Great job, Zayn!'}, {key:'yes', w:'Yes! You did it!'},
+  {key:'tryagain', w:'Try again'}, {key:'whereis', w:"Where's the"},
+];
+// assign stable keys, build a flat lookup
+const ITEM_BY_KEY = {};
+THEMES.forEach(t=>t.items.forEach(it=>{
+  it.key = t.id+'-'+it.w.toLowerCase().replace(/[^a-z]+/g,'');
+  it.theme = t.id;
+  ITEM_BY_KEY[it.key]=it;
+}));
+
+/* =====================================================================
+   AUDIO STORE — recorded clips. Source of truth:
+     1) a baked file  assets/audio/<key>.m4a   (travels with the folder)
+     2) an IndexedDB blob recorded in this browser
+     3) device speech (only if nothing recorded — keeps it usable Day 1)
+   ===================================================================== */
+const SECURE = (window.isSecureContext===true);        // mic needs this
+const SAVE_ENDPOINT = '/save';                          // present when run via voice_server.py
+let bakedKeys = new Set();                              // from manifest.json
+const clipURLs = {};                                    // key -> objectURL (recorded, this device)
+
+/* ---- IndexedDB (clips) ---- */
+let _db=null;
+function db(){
+  return new Promise((res)=>{
+    if(_db) return res(_db);
+    try{
+      const r=indexedDB.open('zayn-voice',1);
+      r.onupgradeneeded=()=>{ r.result.createObjectStore('clips'); };
+      r.onsuccess=()=>{ _db=r.result; res(_db); };
+      r.onerror=()=>res(null);
+    }catch(e){ res(null); }
+  });
+}
+async function dbPut(key,blob){ const d=await db(); if(!d) return; try{
+  await new Promise((ok,no)=>{ const tx=d.transaction('clips','readwrite'); tx.objectStore('clips').put(blob,key); tx.oncomplete=ok; tx.onerror=no; });
+}catch(e){} }
+async function dbGet(key){ const d=await db(); if(!d) return null; try{
+  return await new Promise((ok)=>{ const tx=d.transaction('clips','readonly'); const rq=tx.objectStore('clips').get(key); rq.onsuccess=()=>ok(rq.result||null); rq.onerror=()=>ok(null); });
+}catch(e){ return null; } }
+async function dbAll(){ const d=await db(); if(!d) return {}; try{
+  return await new Promise((ok)=>{ const out={}; const tx=d.transaction('clips','readonly'); const st=tx.objectStore('clips'); const cur=st.openCursor();
+    cur.onsuccess=e=>{ const c=e.target.result; if(c){ out[c.key]=c.value; c.continue(); } else ok(out); }; cur.onerror=()=>ok(out); });
+}catch(e){ return {}; } }
+
+/* ---- load what we already have ---- */
+async function loadAudioIndex(){
+  // baked files
+  try{ const r=await fetch('assets/audio/manifest.json',{cache:'no-store'});
+    if(r.ok){ const j=await r.json(); (j.keys||[]).forEach(k=>bakedKeys.add(k)); } }catch(e){}
+  // recorded blobs in this browser
+  const all=await dbAll();
+  Object.keys(all).forEach(k=>{ try{ clipURLs[k]=URL.createObjectURL(all[k]); }catch(e){} });
+}
+function hasClip(key){ return bakedKeys.has(key) || !!clipURLs[key]; }
+function clipSrc(key){ return clipURLs[key] ? clipURLs[key] : ('assets/audio/'+key+'.m4a'); }
+
+/* ---- play a recorded clip; returns true if one existed ---- */
+let curAudio=null;
+function playClip(key){
+  if(!hasClip(key)) return false;
+  try{
+    if(curAudio){ curAudio.pause(); curAudio=null; }
+    const a=new Audio(clipSrc(key)); curAudio=a; a.play().catch(()=>{});
+    return true;
+  }catch(e){ return false; }
+}
+
+/* =====================================================================
+   DEVICE-SPEECH FALLBACK (guarded — this is the part that crashes iOS
+   if abused, so we keep it minimal and wrapped, and ONLY use it when a
+   word hasn't been recorded yet).
+   ===================================================================== */
+let speechEnabled = !!window.speechSynthesis, enVoice=null;
+function pickVoice(){ try{ const v=speechSynthesis.getVoices(); if(!v||!v.length) return;
+  const pref=['Samantha (Enhanced)','Ava (Premium)','Ava (Enhanced)','Allison','Samantha','Karen','Moira','Daniel'];
+  enVoice=v.find(x=>pref.includes(x.name))||v.find(x=>/en[-_]US/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||v[0]; }catch(e){} }
+if(speechEnabled){ pickVoice(); try{ speechSynthesis.onvoiceschanged=pickVoice; }catch(e){} }
+let _lastSpeak=0;
+function speak(text){
+  if(!speechEnabled) return;
+  const now=Date.now(); if(now-_lastSpeak<120) return; _lastSpeak=now;   // throttle: avoid iOS queue crash
+  try{ speechSynthesis.cancel(); }catch(e){}
+  try{ const u=new SpeechSynthesisUtterance(text); if(enVoice){u.voice=enVoice;u.lang=enVoice.lang||'en-US';}
+    u.rate=0.82; u.pitch=1.1; speechSynthesis.speak(u); }catch(e){}
+}
+/* say a word: recorded clip first, else speech */
+function sayKey(key, fallbackText){ if(!playClip(key)) speak(fallbackText!=null?fallbackText:''); }
+function sayItem(it){ sayKey(it.key, it.w); }
+function sayPhrase(pkey, text){ if(!playClip(pkey)) speak(text); }
+
+/* =====================================================================
+   WebAudio chimes (no files needed)
+   ===================================================================== */
+let actx=null;
+function tone(freq,dur=0.18,type='sine',vol=0.16,when=0){ if(!actx) return; try{
+  const t=actx.currentTime+when, o=actx.createOscillator(), g=actx.createGain();
+  o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+0.02);
+}catch(e){} }
+const chime=()=>{tone(660,0.16,'triangle',0.16,0);tone(880,0.22,'triangle',0.16,0.10);};
+const cheer=()=>{[523,659,784,1046].forEach((f,i)=>tone(f,0.22,'triangle',0.16,i*0.10));};
+const buzz =()=>{tone(200,0.18,'sawtooth',0.10,0);};
+const pop  =()=>{tone(520+Math.random()*240,0.10,'sine',0.14,0);};
+function unlockAudio(){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){}
+  if(speechEnabled){ try{ const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);pickVoice(); }catch(e){} } }
+
+/* =====================================================================
+   SCREENS + helpers
+   ===================================================================== */
+const screens={}; document.querySelectorAll('.screen').forEach(s=>screens[s.id]=s);
+function show(id){ Object.values(screens).forEach(s=>s.classList.toggle('on',s.id===id)); }
+const $=s=>document.querySelector(s);
+function on(sel,fn){ const el=$(sel); if(el) el.addEventListener('click',e=>{ try{fn(e);}catch(err){console.warn(err);} }); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function cardFace(it,withWord){
+  const face=it.sw?`<div class="swatch" style="background:${it.sw}"></div>`:`<div class="emoji">${it.e}</div>`;
+  const word=withWord?`<div class="word">${it.w}${it.ar?`<span class="ar">${it.ar}</span>`:''}</div>`:'';
+  return face+word;
+}
+
+let selTheme=THEMES[0];
+function buildThemes(){ const g=$('#themeGrid'); g.innerHTML='';
+  THEMES.forEach(t=>{ const b=document.createElement('button');
+    b.className='theme'+(t.id===selTheme.id?' sel':'');
+    b.innerHTML=`<span class="e">${t.icon}</span><span class="n">${t.name}</span>`;
+    b.addEventListener('click',()=>{ selTheme=t; buildThemes(); chime(); });
+    g.appendChild(b); });
+}
+
+/* ===================== MODE 1 — TAP & HEAR ===================== */
+let mode='tap';
+const cardsEl=$('#cards'), promptEl=$('#prompt'), starsEl=$('#stars');
+function startTap(){ mode='tap'; starsEl.style.display='none';
+  promptEl.textContent='Tap a picture! 👆';
+  const items=shuffle(selTheme.items).slice(0,Math.min(6,selTheme.items.length));
+  cardsEl.className='cards n'+(items.length<=4?2:3); cardsEl.innerHTML='';
+  items.forEach(it=>{ const c=document.createElement('button'); c.className='card'; c.innerHTML=cardFace(it,true);
+    c.addEventListener('click',()=>{ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); pop(); sayItem(it); sparkleAt(c); });
+    cardsEl.appendChild(c); });
+  show('game');
+}
+
+/* ===================== MODE 2 — FIND IT ===================== */
+let fRound=0, fTotal=5, fTarget=null, fLock=false, hintT=null;
+function startFind(){ mode='find'; fRound=0; starsEl.style.display='flex'; renderStars(); nextFind(); show('game'); }
+function renderStars(){ starsEl.innerHTML=''; for(let i=0;i<fTotal;i++){ const s=document.createElement('span');
+  s.className='star'+(i<fRound?' lit':''); s.textContent='⭐'; starsEl.appendChild(s); } }
+function nextFind(){ fLock=false; hideHint();
+  const choices=Math.min(fRound<2?2:3, selTheme.items.length);
+  const pool=shuffle(selTheme.items); fTarget=pool[0];
+  const opts=shuffle([fTarget,...pool.slice(1,choices)]);
+  promptEl.innerHTML=`Where's the <b>${fTarget.w}</b>?${fTarget.ar?` <span class="ar">${fTarget.ar}</span>`:''}`;
+  setTimeout(()=>{ sayPhrase('whereis',"Where's the"); setTimeout(()=>sayItem(fTarget),650); },300);
+  cardsEl.className='cards n'+(opts.length<=2?2:3); cardsEl.innerHTML='';
+  opts.forEach(it=>{ const c=document.createElement('button'); c.className='card'; c.innerHTML=cardFace(it,false);
+    c.addEventListener('click',()=>pick(c,it)); cardsEl.appendChild(c); });
+  clearTimeout(hintT); hintT=setTimeout(()=>{ if(!fLock) showHintOn([...cardsEl.children][opts.indexOf(fTarget)]); },6000);
+}
+function pick(card,it){ if(fLock) return;
+  if(it===fTarget){ fLock=true; clearTimeout(hintT); hideHint();
+    card.classList.add('right'); chime(); sayItem(it); sparkleAt(card);
+    [...cardsEl.children].forEach(x=>{ if(x!==card) x.classList.add('dim'); });
+    fRound++; renderStars();
+    setTimeout(()=>{ if(fRound>=fTotal) celebrate(); else nextFind(); },1100);
+  } else { card.classList.remove('wrong'); void card.offsetWidth; card.classList.add('wrong'); buzz(); sayPhrase('tryagain','Try again'); }
+}
+const hintEl=$('#hint');
+function showHintOn(card){ if(!card) return; const r=card.getBoundingClientRect();
+  hintEl.style.left=(r.left+r.width/2-27)+'px'; hintEl.style.top=(r.top+r.height/2-10)+'px'; hintEl.classList.add('on'); }
+function hideHint(){ hintEl.classList.remove('on'); }
+
+/* ===================== sparkles + confetti ===================== */
+const fx=$('#fx'), fxc=fx.getContext('2d');
+function sizeFx(){ fx.width=innerWidth*(devicePixelRatio||1); fx.height=innerHeight*(devicePixelRatio||1);
+  fxc.setTransform(devicePixelRatio||1,0,0,devicePixelRatio||1,0,0); }
+addEventListener('resize',sizeFx); sizeFx();
+let parts=[], fxRAF=null;
+function sparkleAt(el){ const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  for(let i=0;i<14;i++){ const a=Math.random()*Math.PI*2, sp=2+Math.random()*4;
+    parts.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,s:6+Math.random()*8,c:`hsl(${Math.random()*360},85%,62%)`,g:0.12,rot:0}); }
+  runFx(); }
+function burstConfetti(){ for(let i=0;i<160;i++){ parts.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*0.4,
+  vx:(Math.random()-.5)*10,vy:-6-Math.random()*9,life:1,s:7+Math.random()*9,c:`hsl(${Math.random()*360},85%,60%)`,g:0.22,rot:Math.random()*6}); } runFx(); }
+function runFx(){ if(fxRAF) return; const step=()=>{ fxc.clearRect(0,0,innerWidth,innerHeight);
+  parts.forEach(p=>{ p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life-=0.012;p.rot+=0.2; fxc.globalAlpha=Math.max(0,p.life);fxc.fillStyle=p.c;
+    fxc.save();fxc.translate(p.x,p.y);fxc.rotate(p.rot);fxc.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);fxc.restore(); });
+  parts=parts.filter(p=>p.life>0&&p.y<innerHeight+40); fxc.globalAlpha=1;
+  if(parts.length) fxRAF=requestAnimationFrame(step); else { fxRAF=null; fxc.clearRect(0,0,innerWidth,innerHeight); } };
+  fxRAF=requestAnimationFrame(step); }
+
+/* ===================== celebration ===================== */
+const cele=$('#cele');
+const EMOJIS=['🌟','🎉','🏆','🥳','🎈','⭐'];
+function celebrate(){ $('#celeBig').textContent=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+  $('#celeH').textContent='Great job, Zayn!'; cele.classList.add('on'); burstConfetti(); cheer();
+  setTimeout(()=>sayPhrase('great','Great job, Zayn!'),250); }
+cele.addEventListener('click',()=>{ cele.classList.remove('on'); if(mode==='find'){ fRound=0; startFind(); } });
+
+/* ===================== MODE 3 — MAGIC PENCIL ===================== */
+const pad=$('#padCanvas'), pctx=pad.getContext('2d');
+const PAL=['#E23B3B','#F4A92B','#F4D03F','#3FAE5A','#3B82E2','#8E5BD9','#E86FB0','#23291E'];
+let brush=PAL[4], drawing=false, last=null, strokeCount=0;
+function sizePad(){ const dpr=devicePixelRatio||1; pad.width=innerWidth*dpr; pad.height=innerHeight*dpr;
+  pctx.setTransform(dpr,0,0,dpr,0,0); pctx.lineCap='round'; pctx.lineJoin='round'; pctx.fillStyle='#fff'; pctx.fillRect(0,0,innerWidth,innerHeight); }
+function buildPalette(){ const bar=$('#drawBar'); bar.innerHTML='';
+  PAL.forEach(c=>{ const b=document.createElement('button'); b.className='swbtn'+(c===brush?' sel':''); b.style.background=c;
+    b.addEventListener('click',()=>{ brush=c; buildPalette(); pop(); }); bar.appendChild(b); }); }
+function padPos(e){ return {x:e.clientX,y:e.clientY,p:(e.pressure&&e.pressure>0)?e.pressure:0.5}; }
+pad.addEventListener('pointerdown',e=>{ e.preventDefault(); drawing=true; last=padPos(e);
+  pctx.fillStyle=brush; pctx.beginPath(); pctx.arc(last.x,last.y,3+last.p*7,0,7); pctx.fill(); pop(); },{passive:false});
+pad.addEventListener('pointermove',e=>{ if(!drawing) return; e.preventDefault();
+  const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+  evs.forEach(ev=>{ const p=padPos(ev); pctx.strokeStyle=brush; pctx.lineWidth=3+p.p*12;
+    pctx.beginPath(); pctx.moveTo(last.x,last.y); pctx.lineTo(p.x,p.y); pctx.stroke(); last=p; }); },{passive:false});
+function endStroke(){ if(!drawing) return; drawing=false; strokeCount++;
+  if(strokeCount%6===0) speak(['Beautiful!','Wow!','Nice drawing, Zayn!','Pretty!'][Math.floor(Math.random()*4)]); }
+pad.addEventListener('pointerup',endStroke); pad.addEventListener('pointercancel',endStroke); pad.addEventListener('pointerleave',endStroke);
+on('#drawClear',()=>{ pctx.fillStyle='#fff'; pctx.fillRect(0,0,innerWidth,innerHeight); chime(); });
+
+/* =====================================================================
+   GROWN-UP RECORDER — getUserMedia + MediaRecorder. Saves each clip to
+   IndexedDB and (if voice_server.py is running) bakes a .m4a file too.
+   ===================================================================== */
+const RECITEMS = THEMES.flatMap(t=>t.items.map(it=>({key:it.key,w:it.w,e:it.e,sw:it.sw,ar:it.ar,group:t.name})))
+  .concat(PHRASES.map(p=>({key:p.key,w:p.w,e:'💬',group:'Phrases Zayn hears'})));
+let micStream=null, mediaRec=null, recChunks=[], recTargetKey=null, recRowEl=null;
+
+function recBanner(msg,bad){ const b=$('#recBanner'); b.textContent=msg; b.classList.toggle('on',!!msg); b.style.background=bad?'#c0392b':'var(--p-wonder)'; }
+
+async function ensureMic(){
+  if(micStream) return micStream;
+  if(!SECURE){ recBanner('To record, open this page from the desktop app (so the microphone is allowed). Right now it is read-only.',true); return null; }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ recBanner('This browser can\'t record audio. Try Safari or Chrome.',true); return null; }
+  try{ micStream=await navigator.mediaDevices.getUserMedia({audio:true}); recBanner(''); return micStream; }
+  catch(e){ recBanner('Microphone permission was blocked. Allow the mic and try again.',true); return null; }
+}
+function recMime(){ const c=['audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'];
+  for(const m of c){ try{ if(window.MediaRecorder && MediaRecorder.isTypeSupported(m)) return m; }catch(e){} } return ''; }
+
+async function startRec(key,onStop){
+  const s=await ensureMic(); if(!s) return false;
+  recTargetKey=key; recChunks=[];
+  try{ const mime=recMime(); mediaRec=mime?new MediaRecorder(s,{mimeType:mime}):new MediaRecorder(s); }
+  catch(e){ recBanner('Could not start recording.',true); return false; }
+  mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size) recChunks.push(e.data); };
+  mediaRec.onstop=async()=>{ const blob=new Blob(recChunks,{type:(mediaRec.mimeType||'audio/mp4')});
+    await saveClip(key,blob); if(onStop) onStop(blob); };
+  mediaRec.start(); return true;
+}
+function stopRec(){ try{ if(mediaRec&&mediaRec.state!=='inactive') mediaRec.stop(); }catch(e){} }
+
+async function saveClip(key,blob){
+  await dbPut(key,blob);
+  try{ if(clipURLs[key]) URL.revokeObjectURL(clipURLs[key]); }catch(e){}
+  clipURLs[key]=URL.createObjectURL(blob);
+  // bake to a file if the local server is available (makes it travel to the iPad)
+  if(SAVE_ENDPOINT){ try{ await fetch(SAVE_ENDPOINT+'/'+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':blob.type||'application/octet-stream'},body:blob}).then(r=>{ if(r.ok) bakedKeys.add(key); }); }catch(e){} }
+}
+
+/* ---- record list UI ---- */
+function buildRecList(){
+  const list=$('#recList'); list.innerHTML=''; let lastGroup=null;
+  RECITEMS.forEach(it=>{
+    if(it.group!==lastGroup){ lastGroup=it.group; const h=document.createElement('div'); h.className='recgrouphdr'; h.textContent=it.group; list.appendChild(h); }
+    const row=document.createElement('div'); row.className='recrow'; row.dataset.key=it.key;
+    row.innerHTML=`<span class="re">${it.e||'💬'}</span>
+      <span class="rw">${it.w}${it.ar?`<span class="ar">${it.ar}</span>`:''}</span>
+      <span class="rok">${hasClip(it.key)?'✓':''}</span>
+      <button class="rbtn rec">●&nbsp;Record</button>
+      <button class="rbtn ghost play">▶︎</button>`;
+    const recBtn=row.querySelector('.rec'), playBtn=row.querySelector('.play'), ok=row.querySelector('.rok');
+    recBtn.addEventListener('click',async()=>{
+      if(mediaRec&&mediaRec.state==='recording'&&recTargetKey===it.key){ stopRec(); recBtn.textContent='●  Record'; recBtn.classList.remove('recording'); return; }
+      const started=await startRec(it.key,()=>{ recBtn.textContent='●  Record'; recBtn.classList.remove('recording'); ok.textContent='✓'; });
+      if(started){ recBtn.textContent='■  Stop'; recBtn.classList.add('recording'); }
+    });
+    playBtn.addEventListener('click',()=>{ if(!playClip(it.key)) recBanner('Not recorded yet — tap Record first.'); });
+    list.appendChild(row);
+  });
+}
+
+/* ---- guided big recorder ---- */
+const guide=$('#guide'); let gIdx=0;
+function openGuide(){ gIdx=0; renderGuide(); guide.classList.add('on'); }
+function renderGuide(){ const it=RECITEMS[gIdx]; $('#gProg').textContent=`${gIdx+1} / ${RECITEMS.length}  ·  ${it.group}`;
+  $('#gCard').innerHTML=`<div class="ge">${it.e||'💬'}</div><div class="gw">${it.w}${it.ar?`<span class="ar">${it.ar}</span>`:''}</div>`;
+  const mic=$('#gMic'); mic.textContent=hasClip(it.key)?'🎙️ Re-record':'🎙️ Record'; mic.classList.remove('recording');
+  $('#gSay').textContent= hasClip(it.key)?'Recorded ✓ — re-record or go next':'Tap the mic and say it once'; }
+$('#gMic').addEventListener('click',async()=>{ const it=RECITEMS[gIdx], mic=$('#gMic');
+  if(mediaRec&&mediaRec.state==='recording'){ stopRec(); return; }
+  const ok=await startRec(it.key,()=>{ mic.classList.remove('recording'); $('#gSay').textContent='Recorded ✓'; setTimeout(()=>{ if(gIdx<RECITEMS.length-1){gIdx++;renderGuide();} },500); });
+  if(ok){ mic.textContent='■ Stop'; mic.classList.add('recording'); $('#gSay').textContent='Say it… tap Stop'; } });
+$('#gPlay').addEventListener('click',()=>{ playClip(RECITEMS[gIdx].key); });
+$('#gPrev').addEventListener('click',()=>{ if(gIdx>0){gIdx--;renderGuide();} });
+$('#gNext').addEventListener('click',()=>{ if(gIdx<RECITEMS.length-1){gIdx++;renderGuide();} });
+$('#gDone').addEventListener('click',()=>{ guide.classList.remove('on'); buildRecList(); });
+
+/* ---- export voice pack (so recordings can move to another device) ---- */
+async function exportPack(){
+  const all=await dbAll(); const keys=Object.keys(all); if(!keys.length){ recBanner('Nothing recorded yet.'); return; }
+  recBanner('Building voice pack…');
+  const pack={created:new Date().toISOString(),clips:{}};
+  for(const k of keys){ pack.clips[k]=await blobToDataURL(all[k]); }
+  const blob=new Blob([JSON.stringify(pack)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='zayn-voicepack.json'; a.click();
+  recBanner(`Saved ${keys.length} clips to zayn-voicepack.json`);
+}
+function blobToDataURL(b){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(b); }); }
+async function importPack(file){ try{ const txt=await file.text(); const pack=JSON.parse(txt);
+  let n=0; for(const k of Object.keys(pack.clips||{})){ const blob=await (await fetch(pack.clips[k])).blob(); await dbPut(k,blob);
+    if(clipURLs[k]) URL.revokeObjectURL(clipURLs[k]); clipURLs[k]=URL.createObjectURL(blob); n++; }
+  recBanner(`Loaded ${n} clips from voice pack ✓`); buildRecList(); }catch(e){ recBanner('That file was not a valid voice pack.',true); } }
+
+function openRec(){ recBanner(SECURE?'' : 'Read-only: open from the desktop app to record. You can still review words here.', !SECURE);
+  buildRecList(); show('rec'); }
+
+/* =====================================================================
+   WIRING
+   ===================================================================== */
+on('#startBtn',()=>{ unlockAudio(); buildThemes(); show('home'); chime(); setTimeout(()=>sayPhrase('hi','Hi Zayn!'),200); });
+document.querySelectorAll('.mode').forEach(btn=>btn.addEventListener('click',()=>{ try{
+  const m=btn.dataset.mode; chime();
+  if(m==='tap') startTap(); else if(m==='find') startFind(); else { sizePad(); buildPalette(); strokeCount=0; show('draw'); }
+}catch(e){console.warn(e);} }));
+on('#gearBtn',()=>{ unlockAudio(); openRec(); });
+on('#recHome',()=>{ stopRec(); show('home'); });
+on('#guidedBtn',()=>{ openGuide(); });
+on('#exportBtn',()=>{ exportPack(); });
+on('#gameHome',()=>{ show('home'); });
+on('#drawHome',()=>{ show('home'); });
+on('#gameSpeak',()=>{ if(mode==='find'&&fTarget) sayItem(fTarget); else sayPhrase('tap','Tap a picture'); });
+
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>e.preventDefault());
+
+/* boot */
+loadAudioIndex();
+/* register the offline service worker (ignored on file://) */
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+</script>
+</body>
+</html>
