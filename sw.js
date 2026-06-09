@@ -3,7 +3,7 @@
    manifest) plus Google Fonts. After the first full visit the app runs with
    no network — important for use in the car / on the go. Bump CACHE to ship
    updates. */
-const CACHE = 'zayn-v1';
+const CACHE = 'zayn-v2';
 const CORE = [
   './', 'play.html', 'index.html', 'manifest.webmanifest',
   'apple-touch-icon.png', 'assets/icon-192.png', 'assets/icon-512.png',
@@ -34,18 +34,35 @@ self.addEventListener('fetch', e => {
   const isFont = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
   if (!sameOrigin && !isFont) return;            // let other requests pass through
 
+  // network-first for things that change (the HTML + the audio manifest) so
+  // newly-added words/clips show up without a version bump; fall back to cache offline.
+  const netFirst = sameOrigin &&
+    (req.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('manifest.json'));
+
+  if (netFirst) {
+    e.respondWith((async () => {
+      try {
+        const res = await fetch(req);
+        const c = await caches.open(CACHE); c.put(req, res.clone());
+        return res;
+      } catch (err) {
+        return (await caches.match(req)) || (await caches.match('play.html')) || Response.error();
+      }
+    })());
+    return;
+  }
+
+  // cache-first for immutable assets (audio clips, icons, fonts)
   e.respondWith((async () => {
     const cached = await caches.match(req);
     if (cached) return cached;
     try {
       const res = await fetch(req);
       if (res && (res.ok || res.type === 'opaque')) {
-        const c = await caches.open(CACHE);
-        c.put(req, res.clone());
+        const c = await caches.open(CACHE); c.put(req, res.clone());
       }
       return res;
     } catch (err) {
-      // offline & not cached — nothing we can do, but don't crash
       return cached || Response.error();
     }
   })());
