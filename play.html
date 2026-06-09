@@ -110,6 +110,10 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 .card .swatch{width:62%;aspect-ratio:1.6/1;border-radius:20px;box-shadow:inset 0 -6px 14px rgba(0,0,0,.12)}
 .card .word{font-family:var(--font-d);font-weight:800;font-size:clamp(18px,3.4vw,30px);color:var(--ink)}
 .card .word .ar{font-family:var(--font-ar);color:var(--green-deep);display:block;font-size:1.05em}
+.card .word.sm{font-size:clamp(15px,2.6vw,22px);color:var(--muted)}
+.card .ltr{font-family:var(--font-d);font-weight:800;font-size:clamp(58px,16vh,160px);line-height:1;color:var(--green-deep)}
+.card .ltr small{font-size:.5em;color:var(--muted);font-weight:700;margin-left:.04em}
+.card .har{font-family:var(--font-ar);font-weight:700;font-size:clamp(70px,19vh,180px);line-height:1;color:var(--green-deep)}
 .card.pop{animation:pop .5s ease}
 .card.right{animation:right .6s ease}
 .card.wrong{animation:wrong .5s ease}
@@ -325,6 +329,37 @@ const THEMES = [
     {e:'📖',w:'Kitab',ar:'كِتاب'},{e:'⭐',w:'Najmah',ar:'نَجْمة'},
     {e:'🤝',w:'Salaam',ar:'سَلام'},{e:'❤️',w:'Hubb',ar:'حُبّ'},
   ]},
+  { id:'abc', name:'ABC Letters', icon:'🔤', items:[
+    {abc:'A',low:'a',ex:'Apple',e:'🍎',k:'a'},{abc:'B',low:'b',ex:'Ball',e:'⚽',k:'b'},
+    {abc:'C',low:'c',ex:'Cat',e:'🐱',k:'c'},{abc:'D',low:'d',ex:'Dog',e:'🐶',k:'d'},
+    {abc:'E',low:'e',ex:'Egg',e:'🥚',k:'e'},{abc:'F',low:'f',ex:'Fish',e:'🐟',k:'f'},
+    {abc:'G',low:'g',ex:'Grapes',e:'🍇',k:'g'},{abc:'H',low:'h',ex:'Hat',e:'🧢',k:'h'},
+    {abc:'I',low:'i',ex:'Ice',e:'🧊',k:'i'},{abc:'J',low:'j',ex:'Juice',e:'🧃',k:'j'},
+    {abc:'K',low:'k',ex:'Kite',e:'🪁',k:'k'},{abc:'L',low:'l',ex:'Lion',e:'🦁',k:'l'},
+    {abc:'M',low:'m',ex:'Moon',e:'🌙',k:'m'},{abc:'N',low:'n',ex:'Nose',e:'👃',k:'n'},
+    {abc:'O',low:'o',ex:'Orange',e:'🍊',k:'o'},{abc:'P',low:'p',ex:'Pig',e:'🐷',k:'p'},
+    {abc:'Q',low:'q',ex:'Queen',e:'👑',k:'q'},{abc:'R',low:'r',ex:'Rainbow',e:'🌈',k:'r'},
+    {abc:'S',low:'s',ex:'Sun',e:'☀️',k:'s'},{abc:'T',low:'t',ex:'Tree',e:'🌳',k:'t'},
+    {abc:'U',low:'u',ex:'Umbrella',e:'☂️',k:'u'},{abc:'V',low:'v',ex:'Van',e:'🚐',k:'v'},
+    {abc:'W',low:'w',ex:'Whale',e:'🐳',k:'w'},{abc:'X',low:'x',ex:'Fox',e:'🦊',k:'x'},
+    {abc:'Y',low:'y',ex:'Yo-yo',e:'🪀',k:'y'},{abc:'Z',low:'z',ex:'Zebra',e:'🦓',k:'z'},
+  ]},
+  { id:'huruf', name:'Arabic Letters', icon:'ا ب', items:[
+    {har:'ا',tr:'alif',name:'أَلِف',k:'alif'},{har:'ب',tr:'baa',name:'باء',k:'ba'},
+    {har:'ت',tr:'taa',name:'تاء',k:'ta'},{har:'ث',tr:'thaa',name:'ثاء',k:'tha'},
+    {har:'ج',tr:'jeem',name:'جيم',k:'jeem'},{har:'ح',tr:'ḥaa',name:'حاء',k:'haa'},
+    {har:'خ',tr:'khaa',name:'خاء',k:'kha'},{har:'د',tr:'daal',name:'دال',k:'dal'},
+    {har:'ذ',tr:'dhaal',name:'ذال',k:'dhal'},{har:'ر',tr:'raa',name:'راء',k:'ra'},
+    {har:'ز',tr:'zay',name:'زاي',k:'zay'},{har:'س',tr:'seen',name:'سين',k:'seen'},
+    {har:'ش',tr:'sheen',name:'شين',k:'sheen'},{har:'ص',tr:'ṣaad',name:'صاد',k:'saad'},
+    {har:'ض',tr:'ḍaad',name:'ضاد',k:'daad'},{har:'ط',tr:'ṭaa',name:'طاء',k:'tta'},
+    {har:'ظ',tr:'ẓaa',name:'ظاء',k:'dhaa'},{har:'ع',tr:'ʿayn',name:'عَيْن',k:'ayn'},
+    {har:'غ',tr:'ghayn',name:'غَيْن',k:'ghayn'},{har:'ف',tr:'faa',name:'فاء',k:'fa'},
+    {har:'ق',tr:'qaaf',name:'قاف',k:'qaf'},{har:'ك',tr:'kaaf',name:'كاف',k:'kaf'},
+    {har:'ل',tr:'laam',name:'لام',k:'lam'},{har:'م',tr:'meem',name:'ميم',k:'meem'},
+    {har:'ن',tr:'noon',name:'نون',k:'noon'},{har:'ه',tr:'haa',name:'هاء',k:'hah'},
+    {har:'و',tr:'waw',name:'واو',k:'waw'},{har:'ي',tr:'yaa',name:'ياء',k:'ya'},
+  ]},
 ];
 // special spoken phrases (praise) we also let Baba record
 const PHRASES = [
@@ -335,7 +370,7 @@ const PHRASES = [
 // assign stable keys, build a flat lookup
 const ITEM_BY_KEY = {};
 THEMES.forEach(t=>t.items.forEach(it=>{
-  it.key = t.id+'-'+it.w.toLowerCase().replace(/[^a-z]+/g,'');
+  it.key = t.id+'-'+(it.k || String(it.w||'').toLowerCase().replace(/[^a-z]+/g,''));
   it.theme = t.id;
   ITEM_BY_KEY[it.key]=it;
 }));
@@ -418,7 +453,7 @@ function speak(text){
 }
 /* say a word: recorded clip first, else speech */
 function sayKey(key, fallbackText){ if(!playClip(key)) speak(fallbackText!=null?fallbackText:''); }
-function sayItem(it){ sayKey(it.key, it.w); }
+function sayItem(it){ sayKey(it.key, fallbackText(it)); }
 function sayPhrase(pkey, text){ if(!playClip(pkey)) speak(text); }
 
 /* =====================================================================
@@ -446,10 +481,21 @@ const $=s=>document.querySelector(s);
 function on(sel,fn){ const el=$(sel); if(el) el.addEventListener('click',e=>{ try{fn(e);}catch(err){console.warn(err);} }); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function cardFace(it,withWord){
-  const face=it.sw?`<div class="swatch" style="background:${it.sw}"></div>`:`<div class="emoji">${it.e}</div>`;
-  const word=withWord?`<div class="word">${it.w}${it.ar?`<span class="ar">${it.ar}</span>`:''}</div>`:'';
+  let face,word='';
+  if(it.abc){ face=`<div class="ltr">${it.abc}<small>${it.low}</small></div>`;
+    if(withWord) word=`<div class="word sm">${it.e} ${it.ex}</div>`; }
+  else if(it.har){ face=`<div class="har">${it.har}</div>`;
+    if(withWord) word=`<div class="word sm">${it.tr}</div>`; }
+  else if(it.sw){ face=`<div class="swatch" style="background:${it.sw}"></div>`;
+    if(withWord) word=`<div class="word">${it.w}</div>`; }
+  else { face=`<div class="emoji">${it.e}</div>`;
+    if(withWord) word=`<div class="word">${it.w}${it.ar?`<span class="ar">${it.ar}</span>`:''}</div>`; }
   return face+word;
 }
+// what "Where's the ___?" names, and the spoken fallback text
+function promptLabel(it){ if(it.abc) return it.abc; if(it.har) return `${it.tr} <span class="ar">${it.har}</span>`;
+  return `${it.w}${it.ar?` <span class="ar">${it.ar}</span>`:''}`; }
+function fallbackText(it){ if(it.abc) return `${it.abc} is for ${it.ex}`; if(it.har) return it.tr; return it.w; }
 
 let selTheme=THEMES[0];
 function buildThemes(){ const g=$('#themeGrid'); g.innerHTML='';
@@ -482,7 +528,7 @@ function nextFind(){ fLock=false; hideHint();
   const choices=Math.min(fRound<2?2:3, selTheme.items.length);
   const pool=shuffle(selTheme.items); fTarget=pool[0];
   const opts=shuffle([fTarget,...pool.slice(1,choices)]);
-  promptEl.innerHTML=`Where's the <b>${fTarget.w}</b>?${fTarget.ar?` <span class="ar">${fTarget.ar}</span>`:''}`;
+  promptEl.innerHTML=`Where's the <b>${promptLabel(fTarget)}</b>?`;
   setTimeout(()=>{ sayPhrase('whereis',"Where's the"); setTimeout(()=>sayItem(fTarget),650); },300);
   cardsEl.className='cards n'+(opts.length<=2?2:3); cardsEl.innerHTML='';
   opts.forEach(it=>{ const c=document.createElement('button'); c.className='card'; c.innerHTML=cardFace(it,false);
@@ -554,7 +600,11 @@ on('#drawClear',()=>{ pctx.fillStyle='#fff'; pctx.fillRect(0,0,innerWidth,innerH
    GROWN-UP RECORDER — getUserMedia + MediaRecorder. Saves each clip to
    IndexedDB and (if voice_server.py is running) bakes a .m4a file too.
    ===================================================================== */
-const RECITEMS = THEMES.flatMap(t=>t.items.map(it=>({key:it.key,w:it.w,e:it.e,sw:it.sw,ar:it.ar,group:t.name})))
+const RECITEMS = THEMES.flatMap(t=>t.items.map(it=>({
+    key:it.key,
+    w: it.w || (it.abc?`${it.abc} — ${it.ex}`:'') || it.tr || '',
+    e: it.e || it.abc || it.har || '💬',
+    ar: it.ar, group:t.name })))
   .concat(PHRASES.map(p=>({key:p.key,w:p.w,e:'💬',group:'Phrases Zayn hears'})));
 let micStream=null, mediaRec=null, recChunks=[], recTargetKey=null, recRowEl=null;
 
