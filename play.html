@@ -70,7 +70,7 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 .iconbtn:active{transform:scale(.92)}
 .iconbtn.small{width:46px;height:46px;font-size:20px;border-radius:15px}
 .gear{opacity:.4}
-.moderow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 2px;z-index:2;}
+.moderow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:6px 0 2px;z-index:2;}
 .mode{border:none;border-radius:26px;padding:22px 16px;cursor:pointer;color:#fff;display:flex;
   flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow-sm);font-family:var(--font-d);
   font-weight:800;font-size:clamp(15px,2.4vw,20px);transition:transform .12s;}
@@ -79,9 +79,12 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 .mode.tap{background:linear-gradient(140deg,var(--p-wonder),#3aa6a6)}
 .mode.find{background:linear-gradient(140deg,var(--p-lang),#e07e5f)}
 .mode.draw{background:linear-gradient(140deg,var(--p-heart),#e6ad48)}
+.mode.trace{background:linear-gradient(140deg,#7a6cd9,#9b8ff0)}
+.mode.wall{background:linear-gradient(140deg,var(--p-roots),#4f9a73)}
 .themelabel{font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin:8px 2px 0;z-index:2;}
-.themegrid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:start;overflow:hidden;z-index:2;}
+.themegrid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:start;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;z-index:2;}
 .theme{border:2px solid transparent;border-radius:22px;background:var(--surface);box-shadow:var(--shadow-sm);
   cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   padding:14px 8px;transition:transform .12s,border-color .15s;}
@@ -104,13 +107,16 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 .cards.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .card{position:relative;border:none;border-radius:30px;background:var(--surface);box-shadow:var(--shadow);
   cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  padding:10px;aspect-ratio:1/1;max-height:38vh;max-width:38vh;margin:auto;width:100%;transition:transform .14s cubic-bezier(.16,1,.3,1);}
+  padding:10px;aspect-ratio:1/1;max-height:38vh;max-width:38vh;margin:auto;width:100%;transition:transform .14s cubic-bezier(.16,1,.3,1);overflow:hidden;}
 .card:active{transform:scale(.95)}
 .card .emoji{font-size:clamp(54px,15vh,150px);line-height:1;filter:drop-shadow(0 8px 14px rgba(0,0,0,.10))}
 .card .swatch{width:62%;aspect-ratio:1.6/1;border-radius:20px;box-shadow:inset 0 -6px 14px rgba(0,0,0,.12)}
+.card .shapesvg{width:60%;aspect-ratio:1/1;filter:drop-shadow(0 8px 14px rgba(0,0,0,.12))}
 .card .word{font-family:var(--font-d);font-weight:800;font-size:clamp(18px,3.4vw,30px);color:var(--ink)}
 .card .word .ar{font-family:var(--font-ar);color:var(--green-deep);display:block;font-size:1.05em}
 .card .word.sm{font-size:clamp(15px,2.6vw,22px);color:var(--muted)}
+.card .numd{font-family:var(--font-d);font-weight:800;font-size:clamp(40px,11vh,104px);line-height:1;color:var(--green-deep)}
+.card .countrow{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;max-width:90%;font-size:clamp(14px,3vw,24px);line-height:1.1;margin-top:2px}
 .card .ltr{font-family:var(--font-d);font-weight:800;font-size:clamp(58px,16vh,160px);line-height:1;color:var(--green-deep)}
 .card .ltr small{font-size:.5em;color:var(--muted);font-weight:700;margin-left:.04em}
 .card .har{font-family:var(--font-ar);font-weight:700;font-size:clamp(70px,19vh,180px);line-height:1;color:var(--green-deep)}
@@ -137,6 +143,13 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 #padCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;background:#fff}
 .drawhome{position:absolute;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:6}
 .drawclear{position:absolute;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:6}
+
+/* ---------- trace it ---------- */
+#trace{padding:0}
+#traceGuide,#traceInk{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#traceInk{z-index:2}
+.tracebar{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  display:flex;gap:14px;z-index:6;background:rgba(255,255,255,.86);backdrop-filter:blur(8px);padding:10px;border-radius:999px;box-shadow:var(--shadow-sm)}
 
 /* ---------- celebration ---------- */
 #cele{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;
@@ -189,6 +202,22 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 .bigmic:active{transform:scale(.96)}
 .guiderow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
 
+/* ---------- abc wall ---------- */
+#wall{gap:12px;overflow:hidden;touch-action:pan-y}
+.walltop{display:flex;align-items:center;gap:12px;z-index:2}
+.wallseg{display:flex;gap:6px;background:var(--surface);padding:6px;border-radius:999px;box-shadow:var(--shadow-sm);margin-left:auto}
+.wallseg button{border:none;background:transparent;font-family:var(--font-d);font-weight:700;font-size:16px;color:var(--muted);padding:8px 18px;border-radius:999px;cursor:pointer}
+.wallseg button.on{background:var(--green);color:#fff}
+.wallgrid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;align-content:start;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:4px 2px 20px;z-index:2}
+.walltile{border:none;border-radius:20px;background:var(--surface);box-shadow:var(--shadow-sm);cursor:pointer;
+  aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.walltile:active{transform:scale(.92)}
+.walltile .wl{font-family:var(--font-d);font-weight:800;font-size:clamp(28px,7vw,46px);color:var(--green-deep)}
+.walltile .wl small{font-size:.5em;color:var(--muted);margin-left:.04em}
+.walltile .wh{font-family:var(--font-ar);font-weight:700;font-size:clamp(32px,8vw,52px);color:var(--green-deep)}
+.walltile.wpop{animation:pop .5s ease}
+
 @media(min-width:1100px){ .moderow{max-width:760px;margin:6px auto 2px} .themegrid{grid-template-columns:repeat(5,1fr)} }
 @media(max-height:560px){ .card{max-height:46vh} }
 </style>
@@ -214,6 +243,8 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
     <button class="mode tap"  data-mode="tap"><span class="ico">👆</span>Tap &amp; Hear</button>
     <button class="mode find" data-mode="find"><span class="ico">🔎</span>Find It!</button>
     <button class="mode draw" data-mode="draw"><span class="ico">✏️</span>Magic Pencil</button>
+    <button class="mode trace" data-mode="trace"><span class="ico">✍️</span>Trace It</button>
+    <button class="mode wall" data-mode="wall"><span class="ico">📖</span>ABC Wall</button>
   </div>
   <div class="themelabel">Pick what to learn</div>
   <div class="themegrid" id="themeGrid"></div>
@@ -232,12 +263,38 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
   </div>
 </section>
 
+<!-- ===================== ABC WALL ===================== -->
+<section class="screen" id="wall">
+  <div class="walltop">
+    <button class="iconbtn" id="wallHome">🏠</button>
+    <div class="wallseg" id="wallSeg">
+      <button data-seg="abc" class="on">ABC</button>
+      <button data-seg="huruf">حروف</button>
+      <button data-seg="numbers">123</button>
+    </div>
+  </div>
+  <div class="wallgrid" id="wallGrid"></div>
+</section>
+
 <!-- ===================== MAGIC PENCIL ===================== -->
 <section class="screen" id="draw">
   <canvas id="padCanvas"></canvas>
   <button class="iconbtn drawhome" id="drawHome">🏠</button>
   <button class="iconbtn drawclear" id="drawClear">🧽</button>
   <div class="drawbar" id="drawBar"></div>
+</section>
+
+<!-- ===================== TRACE IT ===================== -->
+<section class="screen" id="trace">
+  <canvas id="traceGuide"></canvas>
+  <canvas id="traceInk"></canvas>
+  <button class="iconbtn" id="traceHome" style="position:absolute;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:6">🏠</button>
+  <div class="prompt" id="tracePrompt" style="position:absolute;top:max(18px,env(safe-area-inset-top));left:0;right:0;z-index:6;pointer-events:none"></div>
+  <div class="tracebar" id="traceBar">
+    <button class="iconbtn" id="tracePrev">⬅︎</button>
+    <button class="iconbtn" id="traceClear">🧽</button>
+    <button class="iconbtn" id="traceNext">➡︎</button>
+  </div>
 </section>
 
 <!-- ===================== GROWN-UP RECORD ===================== -->
@@ -286,6 +343,9 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 /* =====================================================================
    DATA — themes. Emoji is the artwork. `ar` = Arabic name (Roots/Faith).
    `sw` = a color swatch instead of emoji. Each item gets a stable `key`.
+   `num`/`cnt`/`e` = counting card (digit + a row of `cnt` emoji).
+   `anum`/`tr`/`name` = Eastern-Arabic numeral card (spoken in Arabic).
+   `shape`/`fill`/`svg` = an inline-SVG shape card (spoken by name).
    ===================================================================== */
 const THEMES = [
   { id:'animals', name:'Animals', icon:'🐶', items:[
@@ -359,6 +419,30 @@ const THEMES = [
     {har:'ل',tr:'laam',name:'لام',k:'lam'},{har:'م',tr:'meem',name:'ميم',k:'meem'},
     {har:'ن',tr:'noon',name:'نون',k:'noon'},{har:'ه',tr:'haa',name:'هاء',k:'hah'},
     {har:'و',tr:'waw',name:'واو',k:'waw'},{har:'ي',tr:'yaa',name:'ياء',k:'ya'},
+  ]},
+  { id:'numbers', name:'Counting 1–10', icon:'🔢', items:[
+    {num:'1',cnt:1,e:'🍎',w:'One',k:'1'},{num:'2',cnt:2,e:'🍌',w:'Two',k:'2'},
+    {num:'3',cnt:3,e:'⭐',w:'Three',k:'3'},{num:'4',cnt:4,e:'🐠',w:'Four',k:'4'},
+    {num:'5',cnt:5,e:'🌸',w:'Five',k:'5'},{num:'6',cnt:6,e:'🍓',w:'Six',k:'6'},
+    {num:'7',cnt:7,e:'🐝',w:'Seven',k:'7'},{num:'8',cnt:8,e:'🍪',w:'Eight',k:'8'},
+    {num:'9',cnt:9,e:'🎈',w:'Nine',k:'9'},{num:'10',cnt:10,e:'⚽',w:'Ten',k:'10'},
+  ]},
+  { id:'arabicnumbers', name:'Arabic Numbers', icon:'١٢٣', items:[
+    {anum:'١',tr:'waaḥid',name:'وَاحِد',k:'wahid'},{anum:'٢',tr:'ithnaan',name:'اِثْنان',k:'ithnan'},
+    {anum:'٣',tr:'thalaatha',name:'ثَلاثة',k:'thalatha'},{anum:'٤',tr:'arbaʿa',name:'أَرْبَعة',k:'arbaa'},
+    {anum:'٥',tr:'khamsa',name:'خَمْسة',k:'khamsa'},{anum:'٦',tr:'sitta',name:'سِتّة',k:'sitta'},
+    {anum:'٧',tr:'sabʿa',name:'سَبْعة',k:'sabaa'},{anum:'٨',tr:'thamaaniya',name:'ثَمانِية',k:'thamaniya'},
+    {anum:'٩',tr:'tisʿa',name:'تِسْعة',k:'tisaa'},{anum:'١٠',tr:'ʿashara',name:'عَشَرة',k:'ashara'},
+  ]},
+  { id:'shapes', name:'Shapes', icon:'🔷', items:[
+    {shape:'circle',   w:'Circle',    fill:'#3B82E2', k:'circle',   svg:'<circle cx="50" cy="50" r="42"/>'},
+    {shape:'square',   w:'Square',    fill:'#E23B3B', k:'square',   svg:'<rect x="10" y="10" width="80" height="80" rx="10"/>'},
+    {shape:'triangle', w:'Triangle',  fill:'#3FAE5A', k:'triangle', svg:'<polygon points="50,10 90,85 10,85"/>'},
+    {shape:'star',     w:'Star',      fill:'#F4D03F', k:'star',     svg:'<polygon points="50,6 61.8,38 95,38 68.5,58.9 79.4,92 50,72.4 20.6,92 31.5,58.9 5,38 38.2,38"/>'},
+    {shape:'heart',    w:'Heart',     fill:'#E86FB0', k:'heart',    svg:'<path d="M50 86 C18 60 8 36 28 22 C40 14 50 24 50 32 C50 24 60 14 72 22 C92 36 82 60 50 86 Z"/>'},
+    {shape:'diamond',  w:'Diamond',   fill:'#8E5BD9', k:'diamond',  svg:'<polygon points="50,8 90,50 50,92 10,50"/>'},
+    {shape:'rectangle',w:'Rectangle', fill:'#F4A92B', k:'rectangle',svg:'<rect x="8" y="26" width="84" height="48" rx="8"/>'},
+    {shape:'oval',     w:'Oval',      fill:'#2C8C8C', k:'oval',     svg:'<ellipse cx="50" cy="50" rx="44" ry="30"/>'},
   ]},
 ];
 // special spoken phrases (praise) we also let Baba record
@@ -486,6 +570,12 @@ function cardFace(it,withWord){
     if(withWord) word=`<div class="word sm">${it.e} ${it.ex}</div>`; }
   else if(it.har){ face=`<div class="har">${it.har}</div>`;
     if(withWord) word=`<div class="word sm">${it.tr}</div>`; }
+  else if(it.num){ face=`<div class="numd">${it.num}</div><div class="countrow">${Array(it.cnt).fill(it.e).join('')}</div>`;
+    if(withWord) word=`<div class="word sm">${it.w}</div>`; }
+  else if(it.anum){ face=`<div class="har">${it.anum}</div>`;
+    if(withWord) word=`<div class="word sm">${it.tr}</div>`; }
+  else if(it.shape){ face=`<svg class="shapesvg" viewBox="0 0 100 100" fill="${it.fill}">${it.svg}</svg>`;
+    if(withWord) word=`<div class="word">${it.w}</div>`; }
   else if(it.sw){ face=`<div class="swatch" style="background:${it.sw}"></div>`;
     if(withWord) word=`<div class="word">${it.w}</div>`; }
   else { face=`<div class="emoji">${it.e}</div>`;
@@ -494,8 +584,10 @@ function cardFace(it,withWord){
 }
 // what "Where's the ___?" names, and the spoken fallback text
 function promptLabel(it){ if(it.abc) return it.abc; if(it.har) return `${it.tr} <span class="ar">${it.har}</span>`;
+  if(it.num) return it.w; if(it.anum) return `${it.tr} <span class="ar">${it.anum}</span>`;
   return `${it.w}${it.ar?` <span class="ar">${it.ar}</span>`:''}`; }
-function fallbackText(it){ if(it.abc) return `${it.abc} is for ${it.ex}`; if(it.har) return it.tr; return it.w; }
+function fallbackText(it){ if(it.abc) return `${it.abc} is for ${it.ex}`; if(it.har) return it.tr;
+  if(it.num) return it.w; if(it.anum) return it.tr; return it.w; }
 
 let selTheme=THEMES[0];
 function buildThemes(){ const g=$('#themeGrid'); g.innerHTML='';
@@ -573,7 +665,7 @@ const EMOJIS=['🌟','🎉','🏆','🥳','🎈','⭐'];
 function celebrate(){ $('#celeBig').textContent=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
   $('#celeH').textContent='Great job, Zayn!'; cele.classList.add('on'); burstConfetti(); cheer();
   setTimeout(()=>sayPhrase('great','Great job, Zayn!'),250); }
-cele.addEventListener('click',()=>{ cele.classList.remove('on'); if(mode==='find'){ fRound=0; startFind(); } });
+cele.addEventListener('click',()=>{ cele.classList.remove('on'); if(mode==='find'){ fRound=0; startFind(); } else if(mode==='trace'){ show('home'); } });
 
 /* ===================== MODE 3 — MAGIC PENCIL ===================== */
 const pad=$('#padCanvas'), pctx=pad.getContext('2d');
@@ -595,6 +687,95 @@ function endStroke(){ if(!drawing) return; drawing=false; strokeCount++;
   if(strokeCount%6===0) speak(['Beautiful!','Wow!','Nice drawing, Zayn!','Pretty!'][Math.floor(Math.random()*4)]); }
 pad.addEventListener('pointerup',endStroke); pad.addEventListener('pointercancel',endStroke); pad.addEventListener('pointerleave',endStroke);
 on('#drawClear',()=>{ pctx.fillStyle='#fff'; pctx.fillRect(0,0,innerWidth,innerHeight); chime(); });
+
+/* ===================== MODE 5 — TRACE IT ===================== */
+/* Sequence: A–Z then digits 1–9 (reuses abc + numbers items). */
+const TRACE_ITEMS = [
+  ...THEMES.find(t=>t.id==='abc').items.map(it=>({glyph:it.abc, key:it.key})),
+  ...THEMES.find(t=>t.id==='numbers').items.filter(it=>+it.num<=9).map(it=>({glyph:it.num, key:it.key})),
+];
+const traceGuide=$('#traceGuide'), gctx=traceGuide.getContext('2d');
+const traceInk=$('#traceInk'),   inkCtx=traceInk.getContext('2d');
+const guideMask=document.createElement('canvas'), maskCtx=guideMask.getContext('2d');  // offscreen, CSS-size
+let tIdx=0, guidePts=[], coveredCelebrated=false, tracing=false, tLast=null, celebT=null;
+
+function sizeTrace(){ const dpr=devicePixelRatio||1;
+  [traceGuide,traceInk].forEach(cv=>{ cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
+    const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.lineCap='round'; c.lineJoin='round'; });
+  // mask is CSS-pixel size (NO dpr) so sampling stays in CSS coords
+  guideMask.width=innerWidth; guideMask.height=innerHeight;
+  maskCtx.setTransform(1,0,0,1,0,0); maskCtx.lineCap='round'; maskCtx.lineJoin='round';
+}
+function clearInk(){ inkCtx.clearRect(0,0,innerWidth,innerHeight); coveredCelebrated=false; }
+
+function renderTrace(){
+  const item=TRACE_ITEMS[tIdx];
+  // 1. clear both visible canvases + the mask
+  gctx.clearRect(0,0,innerWidth,innerHeight);
+  inkCtx.clearRect(0,0,innerWidth,innerHeight);
+  maskCtx.clearRect(0,0,innerWidth,innerHeight);
+  // 2. shared geometry — IDENTICAL cx/cy/fs/font for visible guide AND mask
+  const fs=Math.min(innerWidth,innerHeight)*0.6, cx=innerWidth/2, cy=innerHeight/2;
+  // NOTE: canvas ctx.font can't read CSS vars — use a literal stack matching --font-d (Outfit).
+  const font=`800 ${fs}px Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  // 3. visible faint guide: light fill + dashed light-green outline
+  gctx.font=font; gctx.textAlign='center'; gctx.textBaseline='middle';
+  gctx.fillStyle='#DfE7D8'; gctx.fillText(item.glyph,cx,cy);
+  gctx.save(); gctx.setLineDash([8,8]); gctx.lineWidth=3; gctx.strokeStyle='#9DC3A8';
+  gctx.strokeText(item.glyph,cx,cy); gctx.restore();
+  // 4. mask: SAME glyph at SAME cx,cy,fs, solid black; sample a grid of its ink
+  maskCtx.font=font; maskCtx.textAlign='center'; maskCtx.textBaseline='middle';
+  maskCtx.fillStyle='#000'; maskCtx.fillText(item.glyph,cx,cy);
+  const img=maskCtx.getImageData(0,0,innerWidth,innerHeight).data;
+  guidePts=[];
+  for(let y=0;y<innerHeight;y+=7){ for(let x=0;x<innerWidth;x+=7){
+    if(img[(y*innerWidth+x)*4+3]>128) guidePts.push({x,y});
+  } }
+  coveredCelebrated=false;
+  // 5. prompt
+  $('#tracePrompt').textContent=`Trace the ${item.glyph}`;
+}
+
+/* coverage: map CSS-space guidePts to the dpr-scaled ink ImageData */
+function traceCoverage(){
+  const dpr=devicePixelRatio||1;
+  const W=Math.round(innerWidth*dpr);
+  const ink=inkCtx.getImageData(0,0,W,Math.round(innerHeight*dpr)).data;
+  let covered=0;
+  for(const p of guidePts){
+    const ix=Math.floor(p.x*dpr), iy=Math.floor(p.y*dpr);
+    if(ink[(iy*W+ix)*4+3] > 10) covered++;   // alpha>10 = child drew here
+  }
+  return guidePts.length ? covered/guidePts.length : 0;
+}
+
+function celebrateTrace(){
+  burstConfetti(); cheer(); playClip(TRACE_ITEMS[tIdx].key);
+  clearTimeout(celebT);
+  celebT=setTimeout(()=>{ celebT=null;
+    if(tIdx<TRACE_ITEMS.length-1){ tIdx++; renderTrace(); clearInk(); }
+    else { celebrate(); }   // traced them all — big "you did it!" overlay
+  },1200);
+}
+
+function tracePos(e){ return {x:e.clientX,y:e.clientY,p:(e.pressure&&e.pressure>0)?e.pressure:0.5}; }
+traceInk.addEventListener('pointerdown',e=>{ e.preventDefault(); tracing=true; tLast=tracePos(e);
+  inkCtx.fillStyle='#2F6B4F'; inkCtx.beginPath(); inkCtx.arc(tLast.x,tLast.y,2+tLast.p*7,0,7); inkCtx.fill(); pop(); },{passive:false});
+traceInk.addEventListener('pointermove',e=>{ if(!tracing) return; e.preventDefault();
+  const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+  evs.forEach(ev=>{ const p=tracePos(ev); inkCtx.strokeStyle='#2F6B4F'; inkCtx.lineWidth=4+p.p*14;
+    inkCtx.beginPath(); inkCtx.moveTo(tLast.x,tLast.y); inkCtx.lineTo(p.x,p.y); inkCtx.stroke(); tLast=p; }); },{passive:false});
+function endTrace(){ if(!tracing) return; tracing=false;
+  if(!coveredCelebrated && traceCoverage()>=0.55){ coveredCelebrated=true; celebrateTrace(); } }
+traceInk.addEventListener('pointerup',endTrace);
+traceInk.addEventListener('pointercancel',endTrace);
+traceInk.addEventListener('pointerleave',endTrace);
+
+function openTrace(){ mode='trace'; tIdx=0; clearTimeout(celebT); celebT=null; show('trace'); sizeTrace(); renderTrace(); }
+on('#traceHome',()=>{ clearTimeout(celebT); celebT=null; show('home'); });
+on('#tracePrev',()=>{ clearTimeout(celebT); celebT=null; if(tIdx>0){ tIdx--; renderTrace(); clearInk(); } });
+on('#traceNext',()=>{ clearTimeout(celebT); celebT=null; if(tIdx<TRACE_ITEMS.length-1){ tIdx++; renderTrace(); clearInk(); } });
+on('#traceClear',()=>{ clearInk(); chime(); });
 
 /* =====================================================================
    GROWN-UP RECORDER — getUserMedia + MediaRecorder. Saves each clip to
@@ -697,14 +878,33 @@ async function importPack(file){ try{ const txt=await file.text(); const pack=JS
 function openRec(){ recBanner(SECURE?'' : 'Read-only: open from the desktop app to record. You can still review words here.', !SECURE);
   buildRecList(); show('rec'); }
 
+/* ===================== MODE 4 — ABC WALL ===================== */
+function buildWall(segId){
+  [...$('#wallSeg').children].forEach(s=>s.classList.toggle('on', s.dataset.seg===segId));
+  const t=THEMES.find(x=>x.id===segId); if(!t) return;
+  const g=$('#wallGrid'); g.innerHTML='';
+  t.items.forEach(it=>{
+    const b=document.createElement('button'); b.className='walltile';
+    b.innerHTML = it.abc ? `<span class="wl">${it.abc}<small>${it.low}</small></span>`
+               : it.har ? `<span class="wh">${it.har}</span>`
+               : it.anum ? `<span class="wh">${it.anum}</span>`
+               : it.num ? `<span class="wl">${it.num}</span>` : '';
+    b.addEventListener('click',()=>{ b.classList.remove('wpop'); void b.offsetWidth; b.classList.add('wpop'); pop(); sayItem(it); sparkleAt(b); });
+    g.appendChild(b);
+  });
+}
+function openWall(){ buildWall('abc'); show('wall'); }
+
 /* =====================================================================
    WIRING
    ===================================================================== */
 on('#startBtn',()=>{ unlockAudio(); buildThemes(); show('home'); chime(); setTimeout(()=>sayPhrase('hi','Hi Zayn!'),200); });
 document.querySelectorAll('.mode').forEach(btn=>btn.addEventListener('click',()=>{ try{
   const m=btn.dataset.mode; chime();
-  if(m==='tap') startTap(); else if(m==='find') startFind(); else { sizePad(); buildPalette(); strokeCount=0; show('draw'); }
+  if(m==='tap') startTap(); else if(m==='find') startFind(); else if(m==='wall') openWall(); else if(m==='trace') openTrace(); else { sizePad(); buildPalette(); strokeCount=0; show('draw'); }
 }catch(e){console.warn(e);} }));
+on('#wallHome',()=>{ show('home'); });
+$('#wallSeg').addEventListener('click',e=>{ const b=e.target.closest('button[data-seg]'); if(b) buildWall(b.dataset.seg); });
 on('#gearBtn',()=>{ unlockAudio(); openRec(); });
 on('#recHome',()=>{ stopRec(); show('home'); });
 on('#guidedBtn',()=>{ openGuide(); });
