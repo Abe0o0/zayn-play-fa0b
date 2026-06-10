@@ -3,10 +3,10 @@
    manifest) plus Google Fonts. After the first full visit the app runs with
    no network — important for use in the car / on the go. Bump CACHE to ship
    updates. */
-const CACHE = 'zayn-v6';
+const CACHE = 'zayn-v7';
 const CORE = [
   './', 'play.html', 'index.html', 'zayn-model.js', 'manifest.webmanifest',
-  'apple-touch-icon.png', 'assets/icon-192.png', 'assets/icon-512.png',
+  'apple-touch-icon.png', 'assets/icon-192.png', 'assets/icon-512.png', 'assets/mascot.png',
   'assets/audio/manifest.json'
 ];
 

@@ -74,9 +74,9 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 
 /* ---------- splash ---------- */
 #splash{align-items:center;justify-content:center;text-align:center;gap:24px;z-index:30;}
-#splash .logo{font-size:clamp(96px,24vw,200px);line-height:1;display:grid;place-items:center;
-  width:clamp(170px,42vw,300px);height:clamp(170px,42vw,300px);border-radius:50%;
-  background:radial-gradient(circle at 50% 42%, #fff 0%, rgba(255,255,255,.65) 46%, rgba(255,255,255,0) 72%);
+#splash .logo{width:clamp(200px,48vw,330px);height:clamp(200px,48vw,330px);border-radius:50%;
+  object-fit:contain;padding:5%;
+  background:radial-gradient(circle at 50% 44%, #fff 0%, rgba(255,255,255,.6) 48%, rgba(255,255,255,0) 72%);
   filter:drop-shadow(0 18px 30px rgba(120,90,40,.18));animation:floaty 3.6s ease-in-out infinite;}
 #splash h1{font-size:clamp(36px,8.5vw,72px);color:var(--green-deep);font-weight:700;}
 #splash p{font-size:clamp(16px,3.6vw,22px);color:var(--muted);max-width:24ch;font-weight:700;}
@@ -317,7 +317,7 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 
 <!-- ===================== SPLASH ===================== -->
 <section class="screen on" id="splash">
-  <div class="logo">🐣</div>
+  <img class="logo" src="assets/mascot.png" alt="Zayn's chick" />
   <h1>Zayn's Play &amp; Learn</h1>
   <p>Tap pictures, hear the words, draw with your pencil.</p>
   <button class="bigtap" id="startBtn">Let's Play! 🎈</button>
@@ -819,8 +819,7 @@ function runFx(){ if(fxRAF) return; const step=()=>{ fxc.clearRect(0,0,innerWidt
 
 /* ===================== celebration ===================== */
 const cele=$('#cele');
-const EMOJIS=['🌟','🎉','🏆','🥳','🎈','⭐'];
-function celebrate(){ $('#celeBig').textContent=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+function celebrate(){ $('#celeBig').innerHTML='<img src="assets/mascot.png" alt="" style="width:clamp(150px,42vw,260px);height:auto">';
   $('#celeH').textContent='Great job, Zayn!'; cele.classList.add('on'); burstConfetti(); cheer();
   setTimeout(()=>sayPhrase('great','Great job, Zayn!'),250); }
 cele.addEventListener('click',()=>{ cele.classList.remove('on'); if(mode==='find'){ fRound=0; startFind(); } else if(mode==='trace'){ show('home'); } });
