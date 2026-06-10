@@ -445,6 +445,12 @@ const ZM = window.ZaynModel;
 let zmodel = ZM ? ZM.load() : null;
 const now = () => Date.now();
 function zSave(){ if(ZM && zmodel) ZM.save(zmodel); }
+/* flush the debounced save when iOS hides/suspends the PWA — otherwise taps in
+   the last 500ms before suspension are silently dropped (saveNow also cancels
+   the pending debounce so it can't race the flush). */
+function zFlush(){ if(ZM && zmodel) ZM.saveNow(zmodel); }
+window.addEventListener('pagehide', zFlush);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') zFlush(); });
 function adaptOn(){ return !!(ZM && zmodel && !zmodel.simple); }   // master switch for all adaptivity
 /* =====================================================================
    DATA — themes. Emoji is the artwork. `ar` = Arabic name (Roots/Faith).
@@ -760,11 +766,11 @@ function startForZayn(){
 }
 
 /* ===================== MODE 2 — FIND IT ===================== */
-let fRound=0, fTotal=5, fTarget=null, fLock=false, hintT=null;
+let fRound=0, fTotal=5, fTarget=null, fLock=false, fWrongRecorded=false, hintT=null;
 function startFind(){ mode='find'; fRound=0; starsEl.style.display='flex'; renderStars(); nextFind(); show('game'); }
 function renderStars(){ starsEl.innerHTML=''; for(let i=0;i<fTotal;i++){ const s=document.createElement('span');
   s.className='star'+(i<fRound?' lit':''); s.textContent='⭐'; starsEl.appendChild(s); } }
-function nextFind(){ fLock=false; hideHint();
+function nextFind(){ fLock=false; fWrongRecorded=false; hideHint();
   const want = adaptOn() ? ZM.findChoices(zmodel, selTheme.id) : (fRound<2?2:3);
   const choices=Math.min(want, selTheme.items.length);
   const pool=shuffle(selTheme.items);
@@ -791,7 +797,11 @@ function pick(card,it){ if(fLock) return;
     [...cardsEl.children].forEach(x=>{ if(x!==card) x.classList.add('dim'); });
     fRound++; if(ZM && zmodel){ ZM.recordAnswer(zmodel, fTarget.theme, true, now()); zSave(); } renderStars();
     setTimeout(()=>{ if(fRound>=fTotal) celebrate(); else nextFind(); },1100);
-  } else { card.classList.remove('wrong'); void card.offsetWidth; card.classList.add('wrong'); buzz(); if(ZM && zmodel){ ZM.recordAnswer(zmodel, fTarget.theme, false, now()); zSave(); } sayPhrase('tryagain','Try again'); }
+  } else { card.classList.remove('wrong'); void card.offsetWidth; card.classList.add('wrong'); buzz();
+    // record at most ONE wrong answer per round (mirrors fLock for correct answers) —
+    // a toddler mashing six cards must not tank a mastered theme's EWMA (×0.7 each).
+    if(!fWrongRecorded){ fWrongRecorded=true; if(ZM && zmodel){ ZM.recordAnswer(zmodel, fTarget.theme, false, now()); zSave(); } }
+    sayPhrase('tryagain','Try again'); }
 }
 const hintEl=$('#hint');
 function showHintOn(card){ if(!card) return; const r=card.getBoundingClientRect();
@@ -873,8 +883,10 @@ function renderTrace(){
   maskCtx.clearRect(0,0,innerWidth,innerHeight);
   // 2. shared geometry — IDENTICAL cx/cy/fs/font for visible guide AND mask
   const fs=Math.min(innerWidth,innerHeight)*0.6, cx=innerWidth/2, cy=innerHeight/2;
-  // NOTE: canvas ctx.font can't read CSS vars — use a literal stack matching --font-d (Outfit).
-  const font=`800 ${fs}px Outfit,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  // NOTE: canvas ctx.font can't read CSS vars — use a literal stack matching --font-d (Fredoka,
+  // the font the app actually loads; weight 700 = heaviest loaded). The SAME `font` string is
+  // used for the visible guide AND the offscreen mask so coverage sampling stays consistent.
+  const font=`700 ${fs}px Fredoka,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
   // 3. visible faint guide: light fill + dashed light-green outline
   gctx.font=font; gctx.textAlign='center'; gctx.textBaseline='middle';
   gctx.fillStyle='#DfE7D8'; gctx.fillText(item.glyph,cx,cy);
@@ -1116,7 +1128,12 @@ function dashExport(){ const blob=new Blob([JSON.stringify(zmodel)],{type:'appli
   const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='zayn-model.json'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),60000); }
 function dashImport(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json';
-  inp.onchange=async()=>{ try{ const f=inp.files[0]; if(!f) return; zmodel=Object.assign(ZM.defaultModel(), JSON.parse(await f.text())); ZM.saveNow(zmodel); buildDash(); }catch(e){ alert('That was not a valid backup.'); } };
+  inp.onchange=async()=>{ try{ const f=inp.files[0]; if(!f) return;
+    const data=JSON.parse(await f.text());
+    // guard: the app also exports zayn-voicepack.json — restoring that (or any
+    // non-model JSON) here would silently replace Zayn's progress with junk.
+    if(!ZM.isValidBackup(data)){ alert("That file isn't a progress backup (zayn-model.json) — nothing was changed. Voice packs are loaded from the 🎙️ Grown-ups screen."); return; }
+    zmodel=Object.assign(ZM.defaultModel(), data); ZM.saveNow(zmodel); buildDash(); }catch(e){ alert('That was not a valid backup.'); } };
   inp.click(); }
 
 /* ===================== MODE 4 — ABC WALL ===================== */

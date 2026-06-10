@@ -1131,7 +1131,15 @@ const DOMAINS=[
   {n:"Roots & Faith",e:"🕌",items:["Recognizes the sound of Qur'an","Copies 'Bismillah' or 'Alhamdulillah'","Uses 1 to 2 Arabic words","Waves to 'Assalamu alaykum'","Enjoys the alphabet song","Recognizes 1 to 2 Arabic letters","Joins a short du'a by routine","Imitates prayer movements"]}
 ];
 const msWrap=$("#msDomains");
-function loadMs(){try{return JSON.parse(localStorage.getItem("zayn_ms")||"{}")}catch(e){return {}}}
+function loadMs(){
+  try{return JSON.parse(localStorage.getItem("zayn_ms")||"{}")}
+  catch(e){
+    /* one bad write must not silently wipe the checklist — stash the raw string for recovery */
+    try{localStorage.setItem("zayn_ms_corrupt",JSON.stringify({ts:Date.now(),raw:String(localStorage.getItem("zayn_ms"))}))}catch(e2){}
+    console.warn('zayn milestones: stored state was unreadable — raw copy stashed to localStorage["zayn_ms_corrupt"], starting fresh.',e);
+    return {}
+  }
+}
 function saveMs(o){localStorage.setItem("zayn_ms",JSON.stringify(o))}
 let msState=loadMs();
 function renderMs(){
