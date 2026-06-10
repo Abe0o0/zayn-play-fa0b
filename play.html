@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Zayn" />
 <meta name="theme-color" content="#2F6B4F" />
+<script src="zayn-model.js"></script>
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <link rel="icon" href="apple-touch-icon.png" />
@@ -85,13 +86,17 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
   text-transform:uppercase;color:var(--muted);margin:8px 2px 0;z-index:2;}
 .themegrid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:start;
   overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;z-index:2;}
-.theme{border:2px solid transparent;border-radius:22px;background:var(--surface);box-shadow:var(--shadow-sm);
+.theme{position:relative;border:2px solid transparent;border-radius:22px;background:var(--surface);box-shadow:var(--shadow-sm);
   cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   padding:14px 8px;transition:transform .12s,border-color .15s;}
 .theme:active{transform:scale(.94)}
 .theme.sel{border-color:var(--green)}
+.theme.locked{opacity:.5}
+.theme .lock{position:absolute;top:6px;right:8px;font-size:15px}
 .theme .e{font-size:clamp(30px,6vw,46px);line-height:1}
 .theme .n{font-family:var(--font-d);font-weight:700;font-size:clamp(12px,2vw,15px);color:var(--ink)}
+.theme.forzayn{background:linear-gradient(140deg,#F4D03F,#f6e07a)}
+.theme.forzayn .n{color:var(--ink)}
 
 /* ---------- play area ---------- */
 .play{flex:1;display:flex;flex-direction:column;z-index:2;min-height:0;}
@@ -163,7 +168,7 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 
 /* ---------- grown-up record screen ---------- */
 #rec{background:var(--bg);z-index:35;gap:12px;overflow:hidden}
-#rec .rectop{display:flex;align-items:center;gap:12px}
+.rectop{display:flex;align-items:center;gap:12px}
 #rec .rectop h2{flex:1;font-size:clamp(20px,4.4vw,28px);color:var(--green-deep)}
 .recnote{font-size:14px;color:var(--muted);line-height:1.5;background:var(--green-soft);padding:12px 14px;border-radius:14px}
 .recnote b{color:var(--green-deep)}
@@ -201,6 +206,18 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 .bigmic.recording{background:#c0392b;animation:pulse 1s infinite}
 .bigmic:active{transform:scale(.96)}
 .guiderow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+
+/* ---------- parent dashboard ---------- */
+#dash{gap:12px;overflow:hidden}
+.dashscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;display:flex;flex-direction:column;gap:14px;padding-right:4px}
+.dashcard{background:var(--surface);border-radius:18px;box-shadow:var(--shadow-sm);padding:16px}
+.dashcard h3{font-family:var(--font-d);font-size:16px;color:var(--green-deep);margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--green-soft);color:var(--green-deep);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px}
+.chip.work{background:#FAF0D9;color:#9a6a12}.chip.new{background:#eee;color:#777}
+.dashrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dbtn{border:none;border-radius:999px;padding:10px 16px;font-family:var(--font-d);font-weight:700;cursor:pointer;background:var(--green);color:#fff}
+.dbtn.ghost{background:var(--surface);color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
 
 /* ---------- abc wall ---------- */
 #wall{gap:12px;overflow:hidden;touch-action:pan-y}
@@ -301,6 +318,7 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 <section class="screen" id="rec">
   <div class="rectop">
     <button class="iconbtn small" id="recHome">🏠</button>
+    <button class="iconbtn small" id="toDash">📊</button>
     <h2>🎙️ Record your voice</h2>
   </div>
   <div class="recnote" id="recNote">
@@ -313,6 +331,15 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
     <button class="rbtn ghost" id="exportBtn">⤓ Save voice pack</button>
   </div>
   <div class="reclist" id="recList"></div>
+</section>
+
+<!-- ===================== PARENT DASHBOARD ===================== -->
+<section class="screen" id="dash">
+  <div class="rectop">
+    <button class="iconbtn small" id="dashHome">🏠</button>
+    <h2>📊 Zayn's progress</h2>
+  </div>
+  <div class="dashscroll" id="dashScroll"></div>
 </section>
 
 <!-- guided big recorder -->
@@ -340,6 +367,11 @@ h1,h2,.d{font-family:var(--font-d);font-weight:800;letter-spacing:-.02em;line-he
 
 <script>
 "use strict";
+const ZM = window.ZaynModel;
+let zmodel = ZM ? ZM.load() : null;
+const now = () => Date.now();
+function zSave(){ if(ZM && zmodel) ZM.save(zmodel); }
+function adaptOn(){ return !!(ZM && zmodel && !zmodel.simple); }   // master switch for all adaptivity
 /* =====================================================================
    DATA — themes. Emoji is the artwork. `ar` = Arabic name (Roots/Faith).
    `sw` = a color swatch instead of emoji. Each item gets a stable `key`.
@@ -591,22 +623,64 @@ function fallbackText(it){ if(it.abc) return `${it.abc} is for ${it.ex}`; if(it.
 
 let selTheme=THEMES[0];
 function buildThemes(){ const g=$('#themeGrid'); g.innerHTML='';
+  if(adaptOn()){
+    const b=document.createElement('button'); b.className='theme forzayn';
+    b.innerHTML='<span class="e">⭐</span><span class="n">For Zayn</span>';
+    b.addEventListener('click',()=>{ chime(); startForZayn(); });
+    g.appendChild(b);
+  }
   THEMES.forEach(t=>{ const b=document.createElement('button');
-    b.className='theme'+(t.id===selTheme.id?' sel':'');
-    b.innerHTML=`<span class="e">${t.icon}</span><span class="n">${t.name}</span>`;
-    b.addEventListener('click',()=>{ selTheme=t; buildThemes(); chime(); });
+    const locked = adaptOn() && !ZM.isUnlocked(zmodel, t.id, now());
+    b.className='theme'+(t.id===selTheme.id&&!locked?' sel':'')+(locked?' locked':'');
+    b.innerHTML=`<span class="e">${t.icon}</span><span class="n">${t.name}</span>`+(locked?'<span class="lock">🔒</span>':'');
+    b.addEventListener('click',()=>{
+      if(locked){ pop(); promptUnlock(t); return; }
+      selTheme=t; buildThemes(); chime();
+    });
     g.appendChild(b); });
+}
+
+function promptUnlock(t){
+  const ok = confirm(`Unlock "${t.name}" for Zayn now? (It's usually introduced a little later.)`);
+  if(ok && ZM && zmodel){ zmodel.unlocks[t.id]=true; ZM.saveNow(zmodel); buildThemes(); }
 }
 
 /* ===================== MODE 1 — TAP & HEAR ===================== */
 let mode='tap';
 const cardsEl=$('#cards'), promptEl=$('#prompt'), starsEl=$('#stars');
+// pick n items, weighting toward under-seen items plus a couple favorites (spaced novelty)
+function smartPick(items, n){
+  if(n<1) return [];
+  if(!adaptOn()) return shuffle(items).slice(0, n);
+  const taps = k => (zmodel.items[k] && zmodel.items[k].taps) || 0;
+  // pick 2 favorites first, then fill the rest from the DISJOINT under-seen pool,
+  // so the two sets never overlap and we always return exactly min(n, items.length).
+  const favs = shuffle(items).sort((a,b)=> taps(b.key)-taps(a.key)).slice(0,2);
+  const favKeys = new Set(favs.map(f=>f.key));
+  const fresh = shuffle(items.filter(it=>!favKeys.has(it.key))).sort((a,b)=> taps(a.key)-taps(b.key)); // least-seen first
+  const out = [];
+  for(const it of fresh){ if(out.length>=Math.max(0,n-2)) break; out.push(it); }
+  for(const f of favs){ if(out.length>=n) break; out.push(f); }
+  return shuffle(out).slice(0, n);
+}
 function startTap(){ mode='tap'; starsEl.style.display='none';
   promptEl.textContent='Tap a picture! 👆';
-  const items=shuffle(selTheme.items).slice(0,Math.min(6,selTheme.items.length));
+  const items=smartPick(selTheme.items, Math.min(6, selTheme.items.length));
   cardsEl.className='cards n'+(items.length<=4?2:3); cardsEl.innerHTML='';
   items.forEach(it=>{ const c=document.createElement('button'); c.className='card'; c.innerHTML=cardFace(it,true);
-    c.addEventListener('click',()=>{ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); pop(); sayItem(it); sparkleAt(c); });
+    c.addEventListener('click',()=>{ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); pop(); sayItem(it); if(ZM && zmodel){ ZM.recordTap(zmodel, it.key, now()); zSave(); } sparkleAt(c); });
+    cardsEl.appendChild(c); });
+  show('game');
+}
+function startForZayn(){
+  mode='tap'; starsEl.style.display='none'; promptEl.textContent='Just for you, Zayn! ⭐';
+  const pool=[]; const ids = ZM.unlockedThemes(zmodel, now());
+  THEMES.forEach(t=>{ if(ids.includes(t.id)) pool.push(...t.items); });
+  const items=smartPick(pool, 6);
+  cardsEl.className='cards n'+(items.length<=4?2:3); cardsEl.innerHTML='';
+  items.forEach(it=>{ const c=document.createElement('button'); c.className='card'; c.innerHTML=cardFace(it,true);
+    c.addEventListener('click',()=>{ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); pop(); sayItem(it);
+      if(ZM&&zmodel){ ZM.recordTap(zmodel,it.key,now()); zSave(); } sparkleAt(c); });
     cardsEl.appendChild(c); });
   show('game');
 }
@@ -617,8 +691,18 @@ function startFind(){ mode='find'; fRound=0; starsEl.style.display='flex'; rende
 function renderStars(){ starsEl.innerHTML=''; for(let i=0;i<fTotal;i++){ const s=document.createElement('span');
   s.className='star'+(i<fRound?' lit':''); s.textContent='⭐'; starsEl.appendChild(s); } }
 function nextFind(){ fLock=false; hideHint();
-  const choices=Math.min(fRound<2?2:3, selTheme.items.length);
-  const pool=shuffle(selTheme.items); fTarget=pool[0];
+  const want = adaptOn() ? ZM.findChoices(zmodel, selTheme.id) : (fRound<2?2:3);
+  const choices=Math.min(want, selTheme.items.length);
+  const pool=shuffle(selTheme.items);
+  if(adaptOn()){
+    const itemTaps = it => (zmodel.items[it.key] && zmodel.items[it.key].taps) || 0;
+    // ascending sort → pool[0] is lowest score: 0 = mid-seen (1-5 taps, drill these first),
+    // 1 = over-seen (>5 taps), 2 = brand-new (0 taps, last). If the mid-seen bucket has one
+    // item it will recur as target — intended (drill the under-practiced one).
+    const bucket = it => itemTaps(it)===0 ? 2 : itemTaps(it)>5 ? 1 : 0;
+    pool.sort((a,b)=> bucket(a)-bucket(b));
+  }
+  fTarget=pool[0];
   const opts=shuffle([fTarget,...pool.slice(1,choices)]);
   promptEl.innerHTML=`Where's the <b>${promptLabel(fTarget)}</b>?`;
   setTimeout(()=>{ sayPhrase('whereis',"Where's the"); setTimeout(()=>sayItem(fTarget),650); },300);
@@ -631,9 +715,9 @@ function pick(card,it){ if(fLock) return;
   if(it===fTarget){ fLock=true; clearTimeout(hintT); hideHint();
     card.classList.add('right'); chime(); sayItem(it); sparkleAt(card);
     [...cardsEl.children].forEach(x=>{ if(x!==card) x.classList.add('dim'); });
-    fRound++; renderStars();
+    fRound++; if(ZM && zmodel){ ZM.recordAnswer(zmodel, fTarget.theme, true, now()); zSave(); } renderStars();
     setTimeout(()=>{ if(fRound>=fTotal) celebrate(); else nextFind(); },1100);
-  } else { card.classList.remove('wrong'); void card.offsetWidth; card.classList.add('wrong'); buzz(); sayPhrase('tryagain','Try again'); }
+  } else { card.classList.remove('wrong'); void card.offsetWidth; card.classList.add('wrong'); buzz(); if(ZM && zmodel){ ZM.recordAnswer(zmodel, fTarget.theme, false, now()); zSave(); } sayPhrase('tryagain','Try again'); }
 }
 const hintEl=$('#hint');
 function showHintOn(card){ if(!card) return; const r=card.getBoundingClientRect();
@@ -878,6 +962,90 @@ async function importPack(file){ try{ const txt=await file.text(); const pack=JS
 function openRec(){ recBanner(SECURE?'' : 'Read-only: open from the desktop app to record. You can still review words here.', !SECURE);
   buildRecList(); show('rec'); }
 
+/* =====================================================================
+   PARENT DASHBOARD — #dash screen
+   ===================================================================== */
+function fmtStage(s){ return ['—','1 · First words','2 · Everyday world','3 · Letters','4 · Numbers & shapes','5 · Reading-ready'][s]; }
+function themeName(id){ const t=THEMES.find(x=>x.id===id); return t?t.name:id; }
+function weekCtx(){
+  const favTheme=ZM.topInterests(zmodel,1)[0]||null;
+  const workingTheme=Object.keys(ZM.THEME_STAGE).find(id=>ZM.themeStatus(zmodel,id)==='working')||null;
+  const topItemLabel=(themeId)=>{ if(!themeId) return null;
+    const t=THEMES.find(x=>x.id===themeId); if(!t) return null;
+    let best=null,bestN=-1; t.items.forEach(it=>{ const n=(zmodel.items[it.key]&&zmodel.items[it.key].taps)||0; if(n>bestN){bestN=n;best=it;} });
+    return best ? (best.w||best.abc||best.tr||themeName(themeId)) : null; };
+  return { stage:ZM.effectiveStage(zmodel,now()), favTheme, favLabel:topItemLabel(favTheme),
+           workingTheme, workingLabel:topItemLabel(workingTheme) };
+}
+function buildWeekCard(){
+  const card=$('#weekCard'); if(!card) return;
+  const ctx=weekCtx(); const wk=ZM.isoWeekKey(now());
+  if(!zmodel.week || zmodel.week.weekKey!==wk){ zmodel.week=ZM.generateWeek(zmodel, wk, ctx); ZM.saveNow(zmodel); }
+  const days=zmodel.week.days;
+  const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  card.innerHTML=`<h3>This week with Zayn <button class="dbtn ghost" id="regenWeek" style="float:right;padding:6px 12px">🎲 New week</button></h3>`+
+    days.map((d,i)=>`<div class="dashrow" style="align-items:flex-start;margin-top:10px">
+        <span style="font-size:22px">${d.emoji}</span>
+        <div><b>${names[i]} · ${d.pillar}${d.kind==='app'?' · in the app':''}</b><br>
+        <span style="font-weight:700">${d.title}</span> — <span style="color:var(--muted)">${d.detail}</span></div></div>`).join('');
+  on('#regenWeek',()=>{
+    const regen=((zmodel.week&&zmodel.week.regen)||0)+1;   // persisted, monotonic — each click is a new plan
+    zmodel.week=ZM.generateWeek(zmodel, wk+'-r'+regen, weekCtx()); zmodel.week.weekKey=wk; zmodel.week.regen=regen;
+    zmodel.updatedTs=now(); ZM.saveNow(zmodel); buildWeekCard();
+  });
+}
+function buildDash(){
+  if(!ZM||!zmodel){ return; }
+  const es=ZM.effectiveStage(zmodel, now());
+  const mo=ZM.monthsOld(now(), zmodel.dob);
+  const fav=ZM.topInterests(zmodel,3).map(themeName);
+  const ids=Object.keys(ZM.THEME_STAGE);
+  const mastered=ids.filter(id=>ZM.themeStatus(zmodel,id)==='mastered').map(themeName);
+  const working=ids.filter(id=>ZM.themeStatus(zmodel,id)==='working').map(themeName);
+  const notyet=ids.filter(id=>ZM.themeStatus(zmodel,id)==='new').map(themeName);
+  const s=$('#dashScroll');
+  s.innerHTML=`
+    <div class="dashcard">
+      <h3>Zayn right now</h3>
+      <p style="color:var(--muted);margin-bottom:8px">${mo} months · Stage ${fmtStage(es)}</p>
+      <div class="dashrow"><b>Loves:</b> <div class="chips">${(fav.length?fav:['—']).map(n=>`<span class="chip">${n}</span>`).join('')}</div></div>
+      <div class="dashrow" style="margin-top:10px"><b>Stage:</b>
+        <button class="dbtn ghost" id="stMinus">−</button>
+        <button class="dbtn ghost" id="stAuto">Auto</button>
+        <button class="dbtn ghost" id="stPlus">+</button></div>
+    </div>
+    <div class="dashcard">
+      <h3>What he knows</h3>
+      <p><b>Mastered:</b></p><div class="chips">${mastered.length?mastered.map(n=>`<span class="chip">${n}</span>`).join(''):'<span class="chip new">none yet</span>'}</div>
+      <p style="margin-top:8px"><b>Working on:</b></p><div class="chips">${working.length?working.map(n=>`<span class="chip work">${n}</span>`).join(''):'<span class="chip new">—</span>'}</div>
+      <p style="margin-top:8px"><b>Not started:</b></p><div class="chips">${notyet.map(n=>`<span class="chip new">${n}</span>`).join('')}</div>
+    </div>
+    <div class="dashcard" id="weekCard"></div>
+    <div class="dashcard">
+      <h3>Settings</h3>
+      <div class="dashrow">
+        <button class="dbtn ghost" id="simpleToggle">${zmodel.simple?'Adaptive mode: OFF':'Adaptive mode: ON'}</button>
+        <button class="dbtn ghost" id="dashExport">⤓ Backup</button>
+        <button class="dbtn ghost" id="dashImport">⤒ Restore</button>
+        <button class="dbtn ghost" id="dashReset">Reset</button>
+      </div>
+    </div>`;
+  on('#stMinus',()=>{ zmodel.stageOverride=ZM.clamp((zmodel.stageOverride??ZM.effectiveStage(zmodel,now()))-1,1,5); ZM.saveNow(zmodel); buildDash(); });
+  on('#stPlus',()=>{ zmodel.stageOverride=ZM.clamp((zmodel.stageOverride??ZM.effectiveStage(zmodel,now()))+1,1,5); ZM.saveNow(zmodel); buildDash(); });
+  on('#stAuto',()=>{ zmodel.stageOverride=null; ZM.saveNow(zmodel); buildDash(); });
+  on('#simpleToggle',()=>{ zmodel.simple=!zmodel.simple; ZM.saveNow(zmodel); buildDash(); });
+  on('#dashReset',()=>{ if(confirm("Reset all of Zayn's progress?")){ zmodel=ZM.defaultModel(); ZM.saveNow(zmodel); buildDash(); } });
+  on('#dashExport',()=>dashExport());
+  on('#dashImport',()=>dashImport());
+  buildWeekCard();
+}
+function dashExport(){ const blob=new Blob([JSON.stringify(zmodel)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='zayn-model.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),60000); }
+function dashImport(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json';
+  inp.onchange=async()=>{ try{ const f=inp.files[0]; if(!f) return; zmodel=Object.assign(ZM.defaultModel(), JSON.parse(await f.text())); ZM.saveNow(zmodel); buildDash(); }catch(e){ alert('That was not a valid backup.'); } };
+  inp.click(); }
+
 /* ===================== MODE 4 — ABC WALL ===================== */
 function buildWall(segId){
   [...$('#wallSeg').children].forEach(s=>s.classList.toggle('on', s.dataset.seg===segId));
@@ -889,7 +1057,7 @@ function buildWall(segId){
                : it.har ? `<span class="wh">${it.har}</span>`
                : it.anum ? `<span class="wh">${it.anum}</span>`
                : it.num ? `<span class="wl">${it.num}</span>` : '';
-    b.addEventListener('click',()=>{ b.classList.remove('wpop'); void b.offsetWidth; b.classList.add('wpop'); pop(); sayItem(it); sparkleAt(b); });
+    b.addEventListener('click',()=>{ b.classList.remove('wpop'); void b.offsetWidth; b.classList.add('wpop'); pop(); sayItem(it); if(ZM && zmodel){ ZM.recordTap(zmodel, it.key, now()); zSave(); } sparkleAt(b); });
     g.appendChild(b);
   });
 }
@@ -907,6 +1075,8 @@ on('#wallHome',()=>{ show('home'); });
 $('#wallSeg').addEventListener('click',e=>{ const b=e.target.closest('button[data-seg]'); if(b) buildWall(b.dataset.seg); });
 on('#gearBtn',()=>{ unlockAudio(); openRec(); });
 on('#recHome',()=>{ stopRec(); show('home'); });
+on('#toDash',()=>{ if(ZM&&zmodel){ buildDash(); show('dash'); } });
+on('#dashHome',()=>{ show('home'); });
 on('#guidedBtn',()=>{ openGuide(); });
 on('#exportBtn',()=>{ exportPack(); });
 on('#gameHome',()=>{ show('home'); });
@@ -920,6 +1090,7 @@ document.addEventListener('dblclick',e=>e.preventDefault());
 loadAudioIndex();
 /* register the offline service worker (ignored on file://) */
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+if(location.hash==='#dash'){ window.addEventListener('load',()=>{ unlockAudio(); buildThemes(); if(ZM&&zmodel){ buildDash(); show('dash'); } }); }
 </script>
 </body>
 </html>
