@@ -50,11 +50,13 @@ html,body{height:100%;overflow:hidden;}
 body{font-family:var(--font-b);color:var(--ink);-webkit-font-smoothing:antialiased;
   touch-action:none;overscroll-behavior:none;
   background:linear-gradient(180deg,#E9F4FB 0%,#FDF3E2 52%,#FBE9CE 100%);}
-/* painted storybook backdrop: soft sun + rolling hill, behind everything */
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(closest-side at 84% 13%, rgba(255,196,74,.55), rgba(255,196,74,0) 100%) 0 0/46vmin 46vmin no-repeat,
-    radial-gradient(150% 78% at 50% 132%, #CDEBD4 0%, #CDEBD4 41%, transparent 42%) bottom/100% 60% no-repeat;}
+/* hand-built storybook scene behind everything (the .scene SVG lives in markup) */
+.scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.scene .sun{animation:sunbob 7s ease-in-out infinite;transform-origin:330px 132px}
+@keyframes sunbob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(7px) rotate(6deg)}}
+.scene .cl{animation:drift 26s ease-in-out infinite}
+.scene .cl2{animation:drift 34s ease-in-out infinite reverse}
+@keyframes drift{0%,100%{transform:translateX(-10px)}50%{transform:translateX(18px)}}
 .screen{position:fixed;inset:0;display:none;flex-direction:column;
   padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right))
           max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));}
@@ -274,9 +276,7 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 /* gentle night mode: darken the sky + lift on-background text; cards stay lit (charming) */
 @media (prefers-color-scheme: dark){
   body{background:linear-gradient(180deg,#1B2433 0%,#222A39 54%,#2A2433 100%)}
-  body::before{background:
-    radial-gradient(closest-side at 84% 13%, rgba(255,230,150,.28), rgba(255,230,150,0) 100%) 0 0/42vmin 42vmin no-repeat,
-    radial-gradient(150% 78% at 50% 132%, #1F3A2C 0%, #1F3A2C 41%, transparent 42%) bottom/100% 60% no-repeat;}
+  .scene{opacity:.5;filter:saturate(.7) brightness(.85)}
   #splash h1,.topbar h2,.prompt,#cele h1{color:#EAF6EE}
   #splash p,.themelabel,.gearhint,#cele p{color:#AEBBC6}
 }
@@ -288,6 +288,32 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 </style>
 </head>
 <body>
+<!-- hand-built storybook scene (decorative, behind all screens) -->
+<svg class="scene" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <!-- sun with a friendly face -->
+  <g class="sun" opacity=".95">
+    <g stroke="#FFCE54" stroke-width="7" stroke-linecap="round">
+      <line x1="330" y1="60" x2="330" y2="44"/><line x1="386" y1="132" x2="402" y2="132"/>
+      <line x1="276" y1="132" x2="260" y2="132"/><line x1="369" y1="93" x2="381" y2="81"/>
+      <line x1="291" y1="93" x2="279" y2="81"/><line x1="369" y1="171" x2="381" y2="183"/>
+      <line x1="291" y1="171" x2="279" y2="183"/>
+    </g>
+    <circle cx="330" cy="132" r="40" fill="#FFD45E"/>
+    <circle cx="318" cy="126" r="4.6" fill="#6b531a"/><circle cx="342" cy="126" r="4.6" fill="#6b531a"/>
+    <path d="M318 142 q12 12 24 0" fill="none" stroke="#6b531a" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="311" cy="139" r="5.5" fill="#FFB347" opacity=".6"/><circle cx="349" cy="139" r="5.5" fill="#FFB347" opacity=".6"/>
+  </g>
+  <!-- soft clouds -->
+  <g class="cl" fill="#FFFFFF" opacity=".9"><ellipse cx="92" cy="120" rx="42" ry="24"/><ellipse cx="58" cy="128" rx="26" ry="18"/><ellipse cx="124" cy="130" rx="28" ry="18"/></g>
+  <g class="cl2" fill="#FFFFFF" opacity=".8"><ellipse cx="300" cy="250" rx="34" ry="19"/><ellipse cx="276" cy="256" rx="22" ry="14"/><ellipse cx="324" cy="257" rx="22" ry="14"/></g>
+  <!-- rolling hills -->
+  <path d="M0 640 Q120 560 240 626 T400 612 V800 H0 Z" fill="#CFEBD3"/>
+  <path d="M0 690 Q140 620 260 684 T400 672 V800 H0 Z" fill="#AEDDB6"/>
+  <!-- little trees -->
+  <g transform="translate(54 600)"><rect x="-5" y="22" width="10" height="26" rx="4" fill="#B7895B"/><circle cx="0" cy="10" r="26" fill="#74C386"/><circle cx="-14" cy="20" r="17" fill="#7FCB90"/><circle cx="15" cy="19" r="16" fill="#7FCB90"/></g>
+  <g transform="translate(330 650)"><rect x="-4" y="18" width="9" height="22" rx="4" fill="#B7895B"/><circle cx="0" cy="6" r="22" fill="#6FBE80"/><circle cx="13" cy="15" r="14" fill="#7FCB90"/></g>
+  <path d="M0 736 Q150 690 280 730 T400 724 V800 H0 Z" fill="#93D29F"/>
+</svg>
 
 <!-- ===================== SPLASH ===================== -->
 <section class="screen on" id="splash">
