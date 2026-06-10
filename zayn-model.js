@@ -10,6 +10,7 @@
   'use strict';
 
   const STORAGE_KEY = 'zayn_model';
+  const CORRUPT_KEY = 'zayn_model_corrupt';
   const DOB = '2025-04-11';
   const CHOICES_BY_STATUS = { new: 2, working: 3, mastered: 4 };
   const THEME_STAGE = {
@@ -86,15 +87,37 @@
   }
   function findChoices(model, themeId) { return CHOICES_BY_STATUS[themeStatus(model, themeId)]; }
 
+  // A backup/restore payload must look like a real v1 model — not, say, a voice
+  // pack ({created, clips}) — before we let it replace Zayn's progress.
+  function isValidBackup(o) {
+    return !!o && typeof o === 'object' && !Array.isArray(o)
+      && o.v === 1
+      && typeof o.items === 'object' && o.items !== null && !Array.isArray(o.items)
+      && typeof o.themes === 'object' && o.themes !== null && !Array.isArray(o.themes);
+  }
+
   function load() {
+    let raw = null;
     try {
-      const raw = (typeof localStorage !== 'undefined') && localStorage.getItem(STORAGE_KEY);
+      raw = (typeof localStorage !== 'undefined') ? localStorage.getItem(STORAGE_KEY) : null;
       if (!raw) return defaultModel();
       const merged = Object.assign(defaultModel(), JSON.parse(raw));
       // schema migrations live here, keyed on the stored version
       if (merged.v !== 1) { merged.v = 1; } // v1 is current; future versions migrate then set v
       return merged;
-    } catch (e) { return defaultModel(); }
+    } catch (e) {
+      // one bad write must NOT silently wipe progress — stash the raw string so
+      // it can be recovered (or mailed to a human) before starting fresh.
+      try {
+        if (typeof localStorage !== 'undefined' && raw) {
+          localStorage.setItem(CORRUPT_KEY, JSON.stringify({ ts: Date.now(), raw: String(raw) }));
+        }
+      } catch (e2) {}
+      if (typeof console !== 'undefined') {
+        console.warn('zayn-model: stored model was unreadable — raw copy stashed to localStorage["' + CORRUPT_KEY + '"], starting from defaults.', e);
+      }
+      return defaultModel();
+    }
   }
   let _saveT = null;
   function save(model) {
@@ -104,7 +127,9 @@
       _saveT = setTimeout(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(model)); } catch (e) {} }, 500);
     } catch (e) {}
   }
-  function saveNow(model) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(model)); } catch (e) {} }
+  // immediate write — also cancels a pending debounced save (used by the
+  // pagehide/visibilitychange flush so the last taps survive iOS suspending the PWA)
+  function saveNow(model) { try { clearTimeout(_saveT); localStorage.setItem(STORAGE_KEY, JSON.stringify(model)); } catch (e) {} }
 
   // ---- seeded RNG (deterministic per week) ----
   function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
@@ -176,9 +201,9 @@
     return { weekKey, stage, generatedTs: (model.updatedTs || 0), days };
   }
 
-  return { STORAGE_KEY, DOB, THEME_STAGE, CHOICES_BY_STATUS, PILLARS, clamp, defaultModel, monthsOld, ageStage,
+  return { STORAGE_KEY, CORRUPT_KEY, DOB, THEME_STAGE, CHOICES_BY_STATUS, PILLARS, clamp, defaultModel, monthsOld, ageStage,
            themeMastery, themeStatus, stageThemes, stageMastered, autoStage, effectiveStage,
            isUnlocked, unlockedThemes, topInterests, recordTap, recordAnswer, findChoices,
-           load, save, saveNow,
+           isValidBackup, load, save, saveNow,
            hashStr, mulberry32, ACTIVITY_BANK, isoWeekKey, generateWeek };
 });
