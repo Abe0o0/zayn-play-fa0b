@@ -1249,5 +1249,8 @@ if(!matchMedia("(prefers-reduced-motion:reduce)").matches){
   $$(".reveal").forEach(el=>io.observe(el));
 }else{$$(".reveal").forEach(el=>el.classList.add("in"));}
 </script>
+<script>
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+</script>
 </body>
 </html>
