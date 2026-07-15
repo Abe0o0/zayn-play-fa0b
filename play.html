@@ -6,6 +6,7 @@
 <title>Zayn's Play & Learn</title>
 <meta name="description" content="A talking, tappable first-words game for Zayn — words spoken in Baba's own voice. Built for iPad + Apple Pencil." />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Zayn" />
 <meta name="theme-color" content="#2E9E6B" />
@@ -112,6 +113,71 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 .mode.draw{background:linear-gradient(160deg,#FFD15C,#FCAF2A)}
 .mode.trace{background:linear-gradient(160deg,#A99BF7,#8169EE)}
 .mode.wall{background:linear-gradient(160deg,#74D389,#48AE5E)}
+.mode.pop{background:linear-gradient(160deg,#6FC9F7,#3D9BE0)}
+.mode.match{background:linear-gradient(160deg,#F78FB3,#E85D8F)}
+.mode.music{background:linear-gradient(160deg,#FFA26B,#F0763D)}
+
+/* ---- sticker chip (home topbar) + sticker book ---- */
+.stickerchip{border:none;flex:none;background:var(--surface);border-radius:var(--r-pill);
+  padding:10px 16px;font-family:var(--font-d);font-weight:700;font-size:19px;color:var(--green-deep);
+  box-shadow:var(--shadow-sm),var(--lip);cursor:pointer}
+.stickerchip:active{transform:scale(.92)}
+.stickergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:14px;
+  overflow-y:auto;padding:6px 2px 40px;z-index:2}
+.sticker{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:clamp(44px,9vw,64px);
+  background:var(--surface);border:none;border-radius:var(--r-tile);box-shadow:var(--shadow-sm),var(--lip);cursor:pointer}
+.sticker:active{transform:scale(.9)}
+.sticker.newest{animation:stkin .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes stkin{0%{transform:scale(0) rotate(-30deg)}100%{transform:scale(1) rotate(0)}}
+.stickerempty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:19px;padding:40px 20px;line-height:1.5}
+
+/* ---- gear hold-to-open (parent gate) ---- */
+.gear.holding{animation:gearhold 1.8s linear forwards}
+@keyframes gearhold{0%{box-shadow:var(--shadow-sm),var(--lip),0 0 0 0 rgba(47,107,79,.55)}
+  100%{box-shadow:var(--shadow-sm),var(--lip),0 0 0 14px rgba(47,107,79,0);transform:rotate(180deg)}}
+.geartip{position:absolute;top:calc(max(16px,env(safe-area-inset-top)) + 64px);right:max(18px,env(safe-area-inset-right));
+  background:var(--green-deep);color:#fff;font-size:15px;font-weight:600;padding:10px 16px;border-radius:14px;
+  box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.geartip.on{opacity:1}
+
+/* ---- bubble pop ---- */
+#pop{overflow:hidden}
+#popSky{position:absolute;inset:0;overflow:hidden}
+.bubble{position:absolute;bottom:-30vh;border:none;cursor:pointer;border-radius:50%;
+  width:var(--bs,150px);height:var(--bs,150px);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.45) 22%, rgba(190,230,255,.35) 60%, rgba(140,200,240,.5) 100%);
+  box-shadow:inset 0 -6px 16px rgba(90,160,220,.25), inset 0 4px 10px rgba(255,255,255,.8), 0 10px 24px rgba(90,140,200,.18);
+  animation:rise var(--rd,12s) linear var(--rdel,0s) infinite}
+.bubble .emoji{font-size:calc(var(--bs,150px)*.44);line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.12))}
+.bubble .ltr,.bubble .har,.bubble .numd{font-family:var(--font-d);font-weight:700;font-size:calc(var(--bs,150px)*.42);color:var(--green-deep);line-height:1}
+.bubble .ltr small{font-size:.55em;color:var(--muted);margin-left:4px}
+.bubble .swatch{width:calc(var(--bs,150px)*.5);height:calc(var(--bs,150px)*.5);border-radius:50%;box-shadow:inset 0 -4px 8px rgba(0,0,0,.15)}
+.bubble .shapesvg{width:calc(var(--bs,150px)*.52);height:calc(var(--bs,150px)*.52)}
+.bubble .countrow{display:none}
+.bubble .word{display:none}
+@keyframes rise{0%{transform:translateY(0) translateX(0)}25%{transform:translateY(-38vh) translateX(18px)}
+  50%{transform:translateY(-76vh) translateX(-14px)}75%{transform:translateY(-114vh) translateX(12px)}
+  100%{transform:translateY(-152vh) translateX(0)}}
+.bubble.burst{animation:burst .32s ease-out forwards}
+@keyframes burst{0%{scale:1;opacity:1}100%{scale:1.55;opacity:0}}
+
+/* ---- music keys ---- */
+#music{gap:10px}
+.musictop{display:flex;align-items:center;gap:12px;z-index:2}
+.musictop .prompt{flex:1;text-align:center;font-family:var(--font-d);font-weight:700;
+  font-size:clamp(20px,4.6vw,30px);color:var(--green-deep)}
+.keys{flex:1;display:flex;gap:10px;z-index:2;padding-bottom:max(10px,env(safe-area-inset-bottom));min-height:0}
+.key{flex:1;border:none;border-radius:26px 26px 20px 20px;cursor:pointer;box-shadow:var(--shadow-sm),var(--lip);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:22px;
+  font-family:var(--font-d);font-weight:700;font-size:clamp(15px,2.6vw,22px);color:rgba(255,255,255,.9);
+  transition:filter .12s,transform .12s;touch-action:none}
+.key.lit{filter:brightness(1.35) saturate(1.2);transform:scaleY(.97) translateY(4px)}
+/* ---- trace segment toggle (mirrors .wallseg) ---- */
+.traceseg{position:absolute;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:6;
+  display:flex;gap:6px;background:var(--surface);padding:6px;border-radius:var(--r-pill);box-shadow:var(--shadow-sm),var(--lip)}
+.traceseg button{border:none;background:transparent;font-family:var(--font-d);font-weight:600;font-size:15px;
+  color:var(--muted);padding:7px 14px;border-radius:var(--r-pill);cursor:pointer}
+.traceseg button.on{background:var(--green);color:#fff;box-shadow:var(--lip)}
 .themelabel{font-family:var(--font-d);font-weight:600;font-size:15px;letter-spacing:.02em;
   color:var(--muted);margin:10px 2px 2px;z-index:2;}
 .themegrid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:start;
@@ -162,6 +228,7 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 .card.right{animation:right .6s ease}
 .card.wrong{animation:wrong .5s ease}
 .card.dim{opacity:.32;transform:scale(.92);pointer-events:none}
+.card.sel{outline:6px solid var(--green);outline-offset:-6px;transform:scale(1.04)}
 @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.14)}100%{transform:scale(1)}}
 @keyframes right{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(3deg)}60%{transform:scale(1.1) rotate(-3deg)}100%{transform:scale(1.1)}}
 @keyframes wrong{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
@@ -328,14 +395,18 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
 <section class="screen" id="home">
   <div class="topbar">
     <h2>Hi Zayn! 👋</h2>
-    <button class="iconbtn small gear" id="gearBtn" title="Grown-up settings" aria-label="Grown-up settings">⚙️</button>
+    <button class="stickerchip" id="stickerBtn" aria-label="My stickers">⭐ <span id="stickerCount">0</span></button>
+    <button class="iconbtn small gear" id="gearBtn" title="Grown-up settings (hold)" aria-label="Grown-up settings">⚙️</button>
   </div>
   <div class="moderow">
-    <button class="mode tap"  data-mode="tap"><span class="ico">👆</span>Tap &amp; Hear</button>
-    <button class="mode find" data-mode="find"><span class="ico">🔎</span>Find It!</button>
-    <button class="mode draw" data-mode="draw"><span class="ico">✏️</span>Magic Pencil</button>
+    <button class="mode tap"   data-mode="tap"><span class="ico">👆</span>Tap &amp; Hear</button>
+    <button class="mode pop"   data-mode="pop"><span class="ico">🫧</span>Bubble Pop</button>
+    <button class="mode find"  data-mode="find"><span class="ico">🔎</span>Find It!</button>
+    <button class="mode match" data-mode="match"><span class="ico">🧩</span>Match It</button>
+    <button class="mode music" data-mode="music"><span class="ico">🎹</span>Music Keys</button>
+    <button class="mode draw"  data-mode="draw"><span class="ico">✏️</span>Magic Pencil</button>
     <button class="mode trace" data-mode="trace"><span class="ico">✍️</span>Trace It</button>
-    <button class="mode wall" data-mode="wall"><span class="ico">📖</span>ABC Wall</button>
+    <button class="mode wall"  data-mode="wall"><span class="ico">📖</span>ABC Wall</button>
   </div>
   <div class="themelabel">Pick what to learn</div>
   <div class="themegrid" id="themeGrid"></div>
@@ -381,11 +452,41 @@ h1,h2,.d{font-family:var(--font-d);font-weight:700;letter-spacing:0;line-height:
   <canvas id="traceInk"></canvas>
   <button class="iconbtn" id="traceHome" style="position:absolute;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:6">🏠</button>
   <div class="prompt" id="tracePrompt" style="position:absolute;top:max(18px,env(safe-area-inset-top));left:0;right:0;z-index:6;pointer-events:none"></div>
+  <div class="traceseg" id="traceSeg">
+    <button data-tseg="en" class="on">Aa</button>
+    <button data-tseg="num">123</button>
+    <button data-tseg="ar">حروف</button>
+  </div>
   <div class="tracebar" id="traceBar">
     <button class="iconbtn" id="tracePrev">⬅︎</button>
     <button class="iconbtn" id="traceClear">🧽</button>
     <button class="iconbtn" id="traceNext">➡︎</button>
   </div>
+</section>
+
+<!-- ===================== BUBBLE POP ===================== -->
+<section class="screen" id="pop">
+  <button class="iconbtn" id="popHome" style="position:absolute;top:max(16px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));z-index:6">🏠</button>
+  <div id="popSky"></div>
+</section>
+
+<!-- ===================== MUSIC KEYS ===================== -->
+<section class="screen" id="music">
+  <div class="musictop">
+    <button class="iconbtn" id="musicHome">🏠</button>
+    <div class="prompt">Make music! 🎵</div>
+    <button class="iconbtn" id="musicSong" title="Play Twinkle Twinkle">✨</button>
+  </div>
+  <div class="keys" id="musicKeys"></div>
+</section>
+
+<!-- ===================== STICKER BOOK ===================== -->
+<section class="screen" id="stickers">
+  <div class="walltop">
+    <button class="iconbtn" id="stickersHome">🏠</button>
+    <h2 style="font-family:var(--font-d)">⭐ Zayn's Stickers</h2>
+  </div>
+  <div class="stickergrid" id="stickerGrid"></div>
 </section>
 
 <!-- ===================== GROWN-UP RECORD ===================== -->
@@ -484,6 +585,11 @@ const THEMES = [
     {e:'🦶',w:'Foot'},{e:'👄',w:'Mouth'},{e:'👶',w:'Baby'},{e:'👩',w:'Mama',ar:'ماما'},
     {e:'👨',w:'Baba',ar:'بابا'},{e:'🦷',w:'Tooth'},{e:'💇',w:'Hair'},{e:'❤️',w:'Heart'},
   ]},
+  { id:'actions', name:'Things I Do', icon:'👏', items:[
+    {e:'👏',w:'Clap'},{e:'👋',w:'Wave'},{e:'🤗',w:'Hug'},{e:'😘',w:'Kiss'},
+    {e:'🤸',w:'Jump'},{e:'💃',w:'Dance'},{e:'😴',w:'Sleep'},{e:'😋',w:'Eat'},
+    {e:'🏃',w:'Run'},{e:'🧼',w:'Wash'},{e:'👣',w:'Stomp'},{e:'🙌',w:'Up'},
+  ]},
   { id:'colors', name:'Colors', icon:'🌈', items:[
     {sw:'#E23B3B',w:'Red'},{sw:'#F4A92B',w:'Orange'},{sw:'#F4D03F',w:'Yellow'},
     {sw:'#3FAE5A',w:'Green'},{sw:'#3B82E2',w:'Blue'},{sw:'#8E5BD9',w:'Purple'},
@@ -500,6 +606,10 @@ const THEMES = [
     {e:'💧',w:'Maa',ar:'ماء'},{e:'🐱',w:'Qittah',ar:'قِطّة'},
     {e:'📖',w:'Kitab',ar:'كِتاب'},{e:'⭐',w:'Najmah',ar:'نَجْمة'},
     {e:'🤝',w:'Salaam',ar:'سَلام'},{e:'❤️',w:'Hubb',ar:'حُبّ'},
+  ]},
+  { id:'feelings', name:'Feelings', icon:'😄', items:[
+    {e:'😄',w:'Happy'},{e:'😢',w:'Sad'},{e:'🤪',w:'Silly'},{e:'🥱',w:'Sleepy'},
+    {e:'😠',w:'Mad'},{e:'😨',w:'Scared'},{e:'😂',w:'Laugh'},{e:'🥰',w:'Love'},
   ]},
   { id:'abc', name:'ABC Letters', icon:'🔤', items:[
     {abc:'A',low:'a',ex:'Apple',e:'🍎',k:'a'},{abc:'B',low:'b',ex:'Ball',e:'⚽',k:'b'},
@@ -808,6 +918,40 @@ function showHintOn(card){ if(!card) return; const r=card.getBoundingClientRect(
   hintEl.style.left=(r.left+r.width/2-27)+'px'; hintEl.style.top=(r.top+r.height/2-10)+'px'; hintEl.classList.add('on'); }
 function hideHint(){ hintEl.classList.remove('on'); }
 
+/* ===================== MODE — MATCH IT (find the two that are the same) ===================== */
+let mRound=0, mSel=null, mLock=false, mWrongRecorded=false;
+function startMatch(){ mode='match'; mRound=0; starsEl.style.display='flex'; renderMatchStars(); nextMatch(); show('game'); }
+function renderMatchStars(){ starsEl.innerHTML=''; for(let i=0;i<fTotal;i++){ const s=document.createElement('span');
+  s.className='star'+(i<mRound?' lit':''); s.textContent='⭐'; starsEl.appendChild(s); } }
+function nextMatch(){ mSel=null; mLock=false; mWrongRecorded=false;
+  // 2 pairs while a theme is new, 3 once he's working on it — same ramp as Find It
+  const nPairs=Math.min(adaptOn()? (ZM.themeStatus(zmodel,selTheme.id)==='new'?2:3) : (mRound<2?2:3),
+                        selTheme.items.length);
+  const picks=smartPick(selTheme.items,nPairs);
+  const deck=shuffle(picks.concat(picks));                       // each item twice, face-up
+  promptEl.innerHTML='Find the two that <b>match</b>! 🧩';
+  cardsEl.className='cards n'+(deck.length<=4?2:3); cardsEl.innerHTML='';
+  deck.forEach(it=>{ const c=document.createElement('button'); c.className='card'; c.innerHTML=cardFace(it,false);
+    c.addEventListener('click',()=>pickMatch(c,it)); cardsEl.appendChild(c); });
+}
+function pickMatch(card,it){ if(mLock||card.classList.contains('right')) return;
+  if(!mSel){ mSel={card,it}; card.classList.add('sel'); pop(); sayItem(it); return; }
+  if(card===mSel.card){ sayItem(it); return; }                   // same card again — just say it
+  if(it.key===mSel.it.key){                                      // MATCH
+    mLock=true; card.classList.add('right'); mSel.card.classList.add('right'); mSel.card.classList.remove('sel');
+    chime(); sayItem(it); sparkleAt(card); sparkleAt(mSel.card);
+    [...cardsEl.children].forEach(x=>{ if(!x.classList.contains('right')) x.classList.add('dim'); });
+    mRound++; if(ZM&&zmodel){ ZM.recordAnswer(zmodel,selTheme.id,true,now()); zSave(); } renderMatchStars();
+    setTimeout(()=>{ if(mRound>=fTotal) celebrate(); else nextMatch(); },1100);
+  } else {                                                       // not a pair
+    card.classList.remove('wrong'); void card.offsetWidth; card.classList.add('wrong'); buzz();
+    if(!mWrongRecorded){ mWrongRecorded=true; if(ZM&&zmodel){ ZM.recordAnswer(zmodel,selTheme.id,false,now()); zSave(); } }
+    sayPhrase('tryagain','Try again');
+    const prev=mSel; mSel=null;
+    setTimeout(()=>{ prev.card.classList.remove('sel'); card.classList.remove('wrong'); },450);
+  }
+}
+
 /* ===================== sparkles + confetti ===================== */
 const fx=$('#fx'), fxc=fx.getContext('2d');
 function sizeFx(){ fx.width=innerWidth*(devicePixelRatio||1); fx.height=innerHeight*(devicePixelRatio||1);
@@ -827,12 +971,99 @@ function runFx(){ if(fxRAF) return; const step=()=>{ fxc.clearRect(0,0,innerWidt
   if(parts.length) fxRAF=requestAnimationFrame(step); else { fxRAF=null; fxc.clearRect(0,0,innerWidth,innerHeight); } };
   fxRAF=requestAnimationFrame(step); }
 
-/* ===================== celebration ===================== */
+/* ===================== celebration (+ sticker reward) ===================== */
 const cele=$('#cele');
 function celebrate(){ $('#celeBig').innerHTML='<img src="assets/mascot.png" alt="" style="width:clamp(150px,42vw,260px);height:auto">';
   $('#celeH').textContent='Great job, Zayn!'; cele.classList.add('on'); burstConfetti(); cheer();
+  // finishing a set earns a sticker for the book
+  if(ZM && zmodel){ const st=ZM.awardSticker(zmodel, now(), Math.random()); ZM.saveNow(zmodel);
+    $('#celeP').innerHTML=`You earned a <span style="font-size:1.6em;vertical-align:middle">${st}</span> sticker!`; updateStickerChip(); }
+  else { $('#celeP').textContent='Tap to keep playing'; }
   setTimeout(()=>sayPhrase('great','Great job, Zayn!'),250); }
-cele.addEventListener('click',()=>{ cele.classList.remove('on'); if(mode==='find'){ fRound=0; startFind(); } else if(mode==='trace'){ show('home'); } });
+cele.addEventListener('click',()=>{ cele.classList.remove('on');
+  if(mode==='find'){ fRound=0; startFind(); }
+  else if(mode==='match'){ mRound=0; startMatch(); }
+  else if(mode==='trace'){ show('home'); } });
+
+/* ===================== MODE — BUBBLE POP (cause & effect, youngest mode) ===================== */
+const popSky=$('#popSky');
+const BUBBLES=5;
+function bubbleItems(){ // fresh weighted sample each cycle
+  const pool=smartPick(selTheme.items, Math.min(BUBBLES, selTheme.items.length));
+  while(pool.length<BUBBLES) pool.push(selTheme.items[Math.floor(Math.random()*selTheme.items.length)]);
+  return shuffle(pool);
+}
+function dressBubble(b,it){
+  b.dataset.key=it.key; b.innerHTML=cardFace(it,false);
+  const size=Math.round(Math.min(innerWidth,innerHeight)*(0.24+Math.random()*0.10));
+  b.style.setProperty('--bs',size+'px');
+  // lane-based x (one lane per bubble + jitter) so bubbles spread out instead of clustering
+  const lane=+b.dataset.lane||0, laneW=innerWidth/BUBBLES;
+  const x=lane*laneW+(laneW-size)/2+(Math.random()-.5)*laneW*0.4;
+  b.style.left=Math.round(Math.max(4,Math.min(innerWidth-size-4,x)))+'px';
+  b.style.setProperty('--rd',(9+Math.random()*7).toFixed(1)+'s');
+}
+function respawnBubble(b,delay){
+  const items=bubbleItems(); const it=items[Math.floor(Math.random()*items.length)];
+  b.classList.remove('burst'); b.style.animation='none'; void b.offsetWidth;   // restart the rise
+  dressBubble(b,it); b.style.animation=''; b.style.setProperty('--rdel',(delay!=null?delay:0)+'s');
+}
+function startPop(){ mode='pop'; popSky.innerHTML='';
+  const items=bubbleItems();
+  for(let i=0;i<BUBBLES;i++){
+    const b=document.createElement('button'); b.className='bubble'; b.dataset.lane=i; dressBubble(b,items[i]);
+    b.style.setProperty('--rdel',(i*1.6+Math.random()).toFixed(1)+'s');
+    b.addEventListener('click',()=>{
+      if(b.classList.contains('burst')) return;
+      const it=ITEM_BY_KEY[b.dataset.key];
+      b.classList.add('burst'); pop(); if(it){ sayItem(it); if(ZM&&zmodel){ ZM.recordTap(zmodel,it.key,now()); zSave(); } }
+      sparkleAt(b);
+      setTimeout(()=>respawnBubble(b,0.15),340);
+    });
+    // when a bubble sails off the top un-popped, recycle it with a new word
+    b.addEventListener('animationiteration',()=>respawnBubble(b,0));
+    popSky.appendChild(b);
+  }
+  show('pop');
+}
+function stopPop(){ popSky.innerHTML=''; }
+
+/* ===================== MODE — MUSIC KEYS (rainbow xylophone, WebAudio only) ===================== */
+const NOTES=[
+  {n:'Do', f:261.63, c:'#E23B3B'},{n:'Re', f:293.66, c:'#F4A92B'},{n:'Mi', f:329.63, c:'#F4D03F'},
+  {n:'Fa', f:349.23, c:'#3FAE5A'},{n:'So', f:392.00, c:'#2C8C8C'},{n:'La', f:440.00, c:'#3B82E2'},
+  {n:'Ti', f:493.88, c:'#8E5BD9'},{n:'Do!',f:523.25, c:'#E86FB0'},
+];
+/* Twinkle Twinkle as scale-degree indexes into NOTES + beat length */
+const TWINKLE=[[0,1],[0,1],[4,1],[4,1],[5,1],[5,1],[4,2],[3,1],[3,1],[2,1],[2,1],[1,1],[1,1],[0,2],
+               [4,1],[4,1],[3,1],[3,1],[2,1],[2,1],[1,2],[4,1],[4,1],[3,1],[3,1],[2,1],[2,1],[1,2],
+               [0,1],[0,1],[4,1],[4,1],[5,1],[5,1],[4,2],[3,1],[3,1],[2,1],[2,1],[1,1],[1,1],[0,2]];
+let songTimers=[];
+function stopSong(){ songTimers.forEach(clearTimeout); songTimers=[];
+  document.querySelectorAll('.key.lit').forEach(k=>k.classList.remove('lit')); }
+function strikeKey(i,dur){ const el=$('#musicKeys').children[i]; if(!el) return;
+  tone(NOTES[i].f,(dur||0.45),'triangle',0.22); tone(NOTES[i].f*2,(dur||0.45)*0.6,'sine',0.06);
+  el.classList.add('lit'); setTimeout(()=>el.classList.remove('lit'),Math.max(180,(dur||0.45)*600)); }
+function buildKeys(){ const k=$('#musicKeys'); if(k.children.length) return;
+  NOTES.forEach((nt,i)=>{ const b=document.createElement('button'); b.className='key';
+    b.style.background=`linear-gradient(180deg,${nt.c},${nt.c}CC)`; b.textContent=nt.n;
+    b.addEventListener('pointerdown',e=>{ e.preventDefault(); strikeKey(i,0.5); sparkleAt(b); },{passive:false});
+    k.appendChild(b); }); }
+function playTwinkle(){ stopSong(); const BEAT=420; let t=200;
+  TWINKLE.forEach(([i,d])=>{ songTimers.push(setTimeout(()=>strikeKey(i,d*BEAT/1000),t)); t+=d*BEAT; });
+  songTimers.push(setTimeout(stopSong,t+300)); }
+function startMusic(){ mode='music'; buildKeys(); show('music'); }
+
+/* ===================== STICKER BOOK ===================== */
+function updateStickerChip(){ const el=$('#stickerCount'); if(el) el.textContent=(ZM&&zmodel&&zmodel.stickers)?zmodel.stickers.length:0; }
+function openStickers(){
+  const g=$('#stickerGrid'); g.innerHTML='';
+  const list=(ZM&&zmodel&&Array.isArray(zmodel.stickers))?zmodel.stickers:[];
+  if(!list.length){ g.innerHTML='<div class="stickerempty">No stickers yet!<br>Finish a 🔎 Find It or 🧩 Match It game to earn one. ⭐</div>'; }
+  else list.forEach((s,i)=>{ const b=document.createElement('button'); b.className='sticker'+(i===list.length-1?' newest':'');
+    b.textContent=s.e; b.addEventListener('click',()=>{ pop(); sparkleAt(b); }); g.appendChild(b); });
+  show('stickers');
+}
 
 /* ===================== MODE 3 — MAGIC PENCIL ===================== */
 const pad=$('#padCanvas'), pctx=pad.getContext('2d');
@@ -856,11 +1087,15 @@ pad.addEventListener('pointerup',endStroke); pad.addEventListener('pointercancel
 on('#drawClear',()=>{ pctx.fillStyle='#fff'; pctx.fillRect(0,0,innerWidth,innerHeight); chime(); });
 
 /* ===================== MODE 5 — TRACE IT ===================== */
-/* Sequence: A–Z then digits 1–9 (reuses abc + numbers items). */
-const TRACE_ITEMS = [
-  ...THEMES.find(t=>t.id==='abc').items.map(it=>({glyph:it.abc, key:it.key})),
-  ...THEMES.find(t=>t.id==='numbers').items.filter(it=>+it.num<=9).map(it=>({glyph:it.num, key:it.key})),
-];
+/* Three sequences, toggled by the Aa / 123 / حروف segment: A–Z, digits 1–9,
+   and the 28 Arabic letters (canvas falls back to the system Arabic font). */
+const TRACE_SETS = {
+  en:  THEMES.find(t=>t.id==='abc').items.map(it=>({glyph:it.abc, key:it.key})),
+  num: THEMES.find(t=>t.id==='numbers').items.filter(it=>+it.num<=9).map(it=>({glyph:it.num, key:it.key})),
+  ar:  THEMES.find(t=>t.id==='huruf').items.map(it=>({glyph:it.har, key:it.key})),
+};
+let tSeg='en';
+let TRACE_ITEMS = TRACE_SETS.en;
 const traceGuide=$('#traceGuide'), gctx=traceGuide.getContext('2d');
 const traceInk=$('#traceInk'),   inkCtx=traceInk.getContext('2d');
 const guideMask=document.createElement('canvas'), maskCtx=guideMask.getContext('2d');  // offscreen, CSS-size
@@ -940,8 +1175,12 @@ traceInk.addEventListener('pointerup',endTrace);
 traceInk.addEventListener('pointercancel',endTrace);
 traceInk.addEventListener('pointerleave',endTrace);
 
+function setTraceSeg(id){ if(!TRACE_SETS[id]) return; tSeg=id; TRACE_ITEMS=TRACE_SETS[id];
+  [...$('#traceSeg').children].forEach(b=>b.classList.toggle('on',b.dataset.tseg===id));
+  clearTimeout(celebT); celebT=null; tIdx=0; renderTrace(); clearInk(); }
 function openTrace(){ mode='trace'; tIdx=0; clearTimeout(celebT); celebT=null; show('trace'); sizeTrace(); renderTrace(); }
 on('#traceHome',()=>{ clearTimeout(celebT); celebT=null; show('home'); });
+$('#traceSeg').addEventListener('click',e=>{ const b=e.target.closest('button[data-tseg]'); if(b){ chime(); setTraceSeg(b.dataset.tseg); } });
 on('#tracePrev',()=>{ clearTimeout(celebT); celebT=null; if(tIdx>0){ tIdx--; renderTrace(); clearInk(); } });
 on('#traceNext',()=>{ clearTimeout(celebT); celebT=null; if(tIdx<TRACE_ITEMS.length-1){ tIdx++; renderTrace(); clearInk(); } });
 on('#traceClear',()=>{ clearInk(); chime(); });
@@ -1093,6 +1332,11 @@ function buildDash(){
     <div class="dashcard">
       <h3>Zayn right now</h3>
       <p style="color:var(--muted);margin-bottom:8px">${mo} months · Stage ${fmtStage(es)}</p>
+      <div class="dashrow" style="margin-bottom:10px"><div class="chips">
+        <span class="chip">🔥 ${ZM.streak(zmodel, now())}-day streak</span>
+        <span class="chip">⭐ ${(zmodel.stickers||[]).length} sticker${(zmodel.stickers||[]).length===1?'':'s'}</span>
+        <span class="chip">🗣 ${Object.keys(zmodel.items).filter(k=>zmodel.items[k].taps>0).length} / ${Object.keys(ITEM_BY_KEY).length} words explored</span>
+      </div></div>
       <div class="dashrow"><b>Loves:</b> <div class="chips">${(fav.length?fav:['—']).map(n=>`<span class="chip">${n}</span>`).join('')}</div></div>
       <div class="dashrow" style="margin-top:10px"><b>Stage:</b>
         <button class="dbtn ghost" id="stMinus">−</button>
@@ -1156,14 +1400,36 @@ function openWall(){ buildWall('abc'); show('wall'); }
 /* =====================================================================
    WIRING
    ===================================================================== */
-on('#startBtn',()=>{ unlockAudio(); buildThemes(); show('home'); chime(); setTimeout(()=>sayPhrase('hi','Hi Zayn!'),200); });
+on('#startBtn',()=>{ unlockAudio(); buildThemes(); updateStickerChip(); show('home'); chime(); setTimeout(()=>sayPhrase('hi','Hi Zayn!'),200); });
 document.querySelectorAll('.mode').forEach(btn=>btn.addEventListener('click',()=>{ try{
   const m=btn.dataset.mode; chime();
-  if(m==='tap') startTap(); else if(m==='find') startFind(); else if(m==='wall') openWall(); else if(m==='trace') openTrace(); else { sizePad(); buildPalette(); strokeCount=0; show('draw'); }
+  if(m==='tap') startTap(); else if(m==='pop') startPop(); else if(m==='find') startFind();
+  else if(m==='match') startMatch(); else if(m==='music') startMusic();
+  else if(m==='wall') openWall(); else if(m==='trace') openTrace();
+  else { sizePad(); buildPalette(); strokeCount=0; show('draw'); }
 }catch(e){console.warn(e);} }));
 on('#wallHome',()=>{ show('home'); });
 $('#wallSeg').addEventListener('click',e=>{ const b=e.target.closest('button[data-seg]'); if(b) buildWall(b.dataset.seg); });
-on('#gearBtn',()=>{ unlockAudio(); openRec(); });
+on('#popHome',()=>{ stopPop(); show('home'); });
+on('#musicHome',()=>{ stopSong(); show('home'); });
+on('#musicSong',()=>{ if(songTimers.length) stopSong(); else playTwinkle(); });
+on('#stickerBtn',()=>{ chime(); openStickers(); });
+on('#stickersHome',()=>{ show('home'); });
+
+/* parent gate: the gear opens only after a 1.8s hold, so little fingers can't
+   wander into the recorder. A quick tap shows a hint instead. */
+(function(){
+  const gear=$('#gearBtn'); if(!gear) return;
+  const tip=document.createElement('div'); tip.className='geartip'; tip.textContent='Grown-ups: hold the ⚙️ for 2 seconds';
+  screens.home.appendChild(tip);
+  let holdT=null, tipT=null, opened=false;
+  const start=e=>{ e.preventDefault(); opened=false; gear.classList.add('holding');
+    holdT=setTimeout(()=>{ opened=true; gear.classList.remove('holding'); unlockAudio(); chime(); openRec(); },1800); };
+  const cancel=()=>{ clearTimeout(holdT); holdT=null; gear.classList.remove('holding');
+    if(!opened){ tip.classList.add('on'); pop(); clearTimeout(tipT); tipT=setTimeout(()=>tip.classList.remove('on'),1600); } };
+  gear.addEventListener('pointerdown',start,{passive:false});
+  gear.addEventListener('pointerup',cancel); gear.addEventListener('pointercancel',cancel); gear.addEventListener('pointerleave',cancel);
+})();
 on('#recHome',()=>{ stopRec(); show('home'); });
 on('#toDash',()=>{ if(ZM&&zmodel){ buildDash(); show('dash'); } });
 on('#dashHome',()=>{ show('home'); });
@@ -1178,6 +1444,7 @@ document.addEventListener('dblclick',e=>e.preventDefault());
 
 /* boot */
 loadAudioIndex();
+if(ZM && zmodel){ ZM.recordUse(zmodel, now()); zSave(); }   // day-streak mark
 /* register the offline service worker (ignored on file://) */
 if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
 if(location.hash==='#dash'){ window.addEventListener('load',()=>{ unlockAudio(); buildThemes(); if(ZM&&zmodel){ buildDash(); show('dash'); } }); }

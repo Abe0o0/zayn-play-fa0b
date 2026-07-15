@@ -14,8 +14,8 @@
   const DOB = '2025-04-01';
   const CHOICES_BY_STATUS = { new: 2, working: 3, mastered: 4 };
   const THEME_STAGE = {
-    animals: 1, food: 1, body: 1, colors: 1,
-    home: 2, go: 2, nature: 2, arabic: 2,
+    animals: 1, food: 1, body: 1, colors: 1, actions: 1,
+    home: 2, go: 2, nature: 2, arabic: 2, feelings: 2,
     abc: 3, huruf: 3,
     numbers: 4, shapes: 4,
     arabicnumbers: 5,
@@ -27,6 +27,8 @@
   function defaultModel() {
     return { v: 1, dob: DOB, stageOverride: null, unlocks: {}, items: {}, themes: {},
              week: null, // cached weekly plan {weekKey, stage, days[]} — set by generateWeek (Task 2)
+             stickers: [], // earned rewards [{e, ts}] — awardSticker appends
+             daysUsed: {}, // 'YYYY-MM-DD': 1 for each day the app was opened — feeds streak()
              simple: false, updatedTs: 0 };
   }
 
@@ -86,6 +88,37 @@
     model.updatedTs = nowMs; return model;
   }
   function findChoices(model, themeId) { return CHOICES_BY_STATUS[themeStatus(model, themeId)]; }
+
+  // ---- stickers (reward collection) ----
+  // Pool is ordered fun→rare-ish; awardSticker picks randomly via the caller-supplied
+  // rand (0..1) so it stays pure/testable (pass Math.random() from the app).
+  const STICKER_POOL = ['🦄','🌈','🚀','🦖','🐬','🦋','🌟','🏆','🍩','🎈','🐢','🦁','🚂','⚡','🍉','🐙','🎨','🥇','🪁','🦊','🐳','🌻','🍭','🤖','👑','🛸','🧸','🎪','🐘','🦜'];
+  function awardSticker(model, nowMs, rand) {
+    const e = STICKER_POOL[Math.floor((rand != null ? rand : 0) * STICKER_POOL.length) % STICKER_POOL.length];
+    if (!Array.isArray(model.stickers)) model.stickers = [];
+    model.stickers.push({ e, ts: nowMs });
+    model.updatedTs = nowMs;
+    return e;
+  }
+
+  // ---- day streak ----
+  function dayKey(nowMs) { const d = new Date(nowMs);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function recordUse(model, nowMs) {
+    if (!model.daysUsed || typeof model.daysUsed !== 'object') model.daysUsed = {};
+    const k = dayKey(nowMs);
+    if (!model.daysUsed[k]) { model.daysUsed[k] = 1; model.updatedTs = nowMs; }
+    return model;
+  }
+  // consecutive days used, counting back from today (or from yesterday if today
+  // hasn't been recorded yet — an evening-only streak shouldn't read 0 all morning)
+  function streak(model, nowMs) {
+    if (!model.daysUsed) return 0;
+    let t = nowMs, n = 0;
+    if (!model.daysUsed[dayKey(t)]) t -= 86400000;
+    while (model.daysUsed[dayKey(t)]) { n++; t -= 86400000; }
+    return n;
+  }
 
   // A backup/restore payload must look like a real v1 model — not, say, a voice
   // pack ({created, clips}) — before we let it replace Zayn's progress.
@@ -152,11 +185,14 @@
     { pillar: 'Language', minStage: 2, kind: 'real', emoji: '💬', title: 'Narrate lunch', detail: 'Say what you are doing as you make his food: "cutting the {working}…". Live narration grows vocabulary.' },
     { pillar: 'Language', minStage: 1, kind: 'app', emoji: '⭐', title: 'For Zayn session', detail: 'Open the ⭐ For Zayn tile and let him tap and hear 6 pictures.' },
     { pillar: 'Language', minStage: 1, kind: 'real', emoji: '📖', title: 'One book, twice', detail: 'Read one short board book, then read it again — repetition is how the words stick.' },
+    { pillar: 'Language', minStage: 1, kind: 'app', emoji: '🫧', title: 'Bubble Pop words', detail: 'Open 🫧 Bubble Pop in a theme he loves and let him pop and hear 10 words.' },
+    { pillar: 'Language', minStage: 1, kind: 'real', emoji: '👏', title: 'Do the action', detail: 'Say and do three action words together — clap, wave, stomp — he copies you, you cheer.' },
     // Wonder
     { pillar: 'Wonder', minStage: 1, kind: 'real', emoji: '💧', title: 'Water play', detail: 'Let him pour water between two cups at the sink. Talk about full and empty.' },
     { pillar: 'Wonder', minStage: 1, kind: 'real', emoji: '🔎', title: 'Find a {fav}', detail: 'Go on a hunt for a {fav} (or a picture of one) around the house and celebrate when he spots it.' },
     { pillar: 'Wonder', minStage: 2, kind: 'real', emoji: '🌳', title: 'Outside texture walk', detail: 'Touch a leaf, a rock, and grass. Name each and how it feels — soft, hard, bumpy.' },
     { pillar: 'Wonder', minStage: 1, kind: 'app', emoji: '🔎', title: 'Find It round', detail: 'Play one short Find It round in a theme he likes.' },
+    { pillar: 'Wonder', minStage: 2, kind: 'app', emoji: '🧩', title: 'Match It pairs', detail: 'Play one Match It round together — talk about how the two pictures are the same.' },
     // Roots & Faith
     { pillar: 'Roots & Faith', minStage: 1, kind: 'real', emoji: '🤲', title: 'Bismillah together', detail: 'Say "Bismillah" together before a meal today, slowly, so he hears the rhythm.' },
     { pillar: 'Roots & Faith', minStage: 1, kind: 'real', emoji: '🤝', title: 'Salaam greetings', detail: 'Greet each other with "As-salaamu alaykum" today and wave — link the word to the action.' },
@@ -167,6 +203,8 @@
     { pillar: 'Heart & Hands', minStage: 1, kind: 'real', emoji: '🫶', title: 'Helper moment', detail: 'Give him one tiny job — drop socks in the basket — and thank him warmly. Builds belonging.' },
     { pillar: 'Heart & Hands', minStage: 3, kind: 'app', emoji: '✍️', title: 'Trace a letter', detail: 'Open Trace It and trace one letter together with the Pencil.' },
     { pillar: 'Heart & Hands', minStage: 1, kind: 'real', emoji: '🪩', title: 'Dance break', detail: 'One song, dance together, name body parts as you move — "hands up, feet stomp!".' },
+    { pillar: 'Heart & Hands', minStage: 1, kind: 'app', emoji: '🎹', title: 'Music Keys', detail: 'Open 🎹 Music Keys and make sounds together — try the ✨ Twinkle button and watch the keys light up.' },
+    { pillar: 'Roots & Faith', minStage: 3, kind: 'app', emoji: '✍️', title: 'Trace an Arabic letter', detail: 'Open Trace It, switch to حروف, and trace alif or baa together.' },
   ];
 
   function isoWeekKey(nowMs) {
@@ -204,6 +242,7 @@
   return { STORAGE_KEY, CORRUPT_KEY, DOB, THEME_STAGE, CHOICES_BY_STATUS, PILLARS, clamp, defaultModel, monthsOld, ageStage,
            themeMastery, themeStatus, stageThemes, stageMastered, autoStage, effectiveStage,
            isUnlocked, unlockedThemes, topInterests, recordTap, recordAnswer, findChoices,
+           STICKER_POOL, awardSticker, dayKey, recordUse, streak,
            isValidBackup, load, save, saveNow,
            hashStr, mulberry32, ACTIVITY_BANK, isoWeekKey, generateWeek };
 });
