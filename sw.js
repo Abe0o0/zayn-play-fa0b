@@ -7,7 +7,7 @@
    assets, plus Google Fonts. Bump CACHE to ship updates.
    AUDIO list below is generated from assets/audio/*.m4a on disk — regenerate
    it when clips are added or removed. */
-const CACHE = 'zayn-v10';
+const CACHE = 'zayn-v11';
 const CORE = [
   './', 'play.html', 'index.html', 'zayn-model.js', 'manifest.webmanifest',
   'apple-touch-icon.png', 'assets/icon-192.png', 'assets/icon-512.png',
