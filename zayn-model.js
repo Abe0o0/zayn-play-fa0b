@@ -29,6 +29,7 @@
              week: null, // cached weekly plan {weekKey, stage, days[]} — set by generateWeek (Task 2)
              stickers: [], // earned rewards [{e, ts}] — awardSticker appends
              daysUsed: {}, // 'YYYY-MM-DD': 1 for each day the app was opened — feeds streak()
+             slowVoice: true, // slow, clearer speech for a toddler (clips time-stretched at play)
              simple: false, updatedTs: 0 };
   }
 

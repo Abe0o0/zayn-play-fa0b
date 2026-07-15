@@ -729,12 +729,18 @@ function hasClip(key){ return bakedKeys.has(key) || !!clipURLs[key]; }
 function clipSrc(key){ return clipURLs[key] ? clipURLs[key] : ('assets/audio/'+key+'.m4a'); }
 
 /* ---- play a recorded clip; returns true if one existed ---- */
+/* slowVoice (default ON, toggle in the parent dashboard) time-stretches every
+   clip to 80% speed with pitch preserved — toddler-clear without chipmunk/drawl. */
+function slowVoiceOn(){ return !(ZM && zmodel && zmodel.slowVoice===false); }
 let curAudio=null;
 function playClip(key){
   if(!hasClip(key)) return false;
   try{
     if(curAudio){ curAudio.pause(); curAudio=null; }
-    const a=new Audio(clipSrc(key)); curAudio=a; a.play().catch(()=>{});
+    const a=new Audio(clipSrc(key)); curAudio=a;
+    try{ a.preservesPitch=true; a.webkitPreservesPitch=true; }catch(e){}
+    a.playbackRate = slowVoiceOn() ? 0.8 : 1;
+    a.play().catch(()=>{});
     return true;
   }catch(e){ return false; }
 }
@@ -755,7 +761,7 @@ function speak(text){
   const now=Date.now(); if(now-_lastSpeak<120) return; _lastSpeak=now;   // throttle: avoid iOS queue crash
   try{ speechSynthesis.cancel(); }catch(e){}
   try{ const u=new SpeechSynthesisUtterance(text); if(enVoice){u.voice=enVoice;u.lang=enVoice.lang||'en-US';}
-    u.rate=0.82; u.pitch=1.1; speechSynthesis.speak(u); }catch(e){}
+    u.rate=slowVoiceOn()?0.68:0.82; u.pitch=1.1; speechSynthesis.speak(u); }catch(e){}
 }
 /* say a word: recorded clip first, else speech */
 function sayKey(key, fallbackText){ if(!playClip(key)) speak(fallbackText!=null?fallbackText:''); }
@@ -1353,6 +1359,7 @@ function buildDash(){
     <div class="dashcard">
       <h3>Settings</h3>
       <div class="dashrow">
+        <button class="dbtn ghost" id="slowToggle">${zmodel.slowVoice===false?'Voice speed: normal':'🐢 Voice speed: slow'}</button>
         <button class="dbtn ghost" id="simpleToggle">${zmodel.simple?'Adaptive mode: OFF':'Adaptive mode: ON'}</button>
         <button class="dbtn ghost" id="dashExport">⤓ Backup</button>
         <button class="dbtn ghost" id="dashImport">⤒ Restore</button>
@@ -1363,6 +1370,9 @@ function buildDash(){
   on('#stPlus',()=>{ zmodel.stageOverride=ZM.clamp((zmodel.stageOverride??ZM.effectiveStage(zmodel,now()))+1,1,5); ZM.saveNow(zmodel); buildDash(); });
   on('#stAuto',()=>{ zmodel.stageOverride=null; ZM.saveNow(zmodel); buildDash(); });
   on('#simpleToggle',()=>{ zmodel.simple=!zmodel.simple; ZM.saveNow(zmodel); buildDash(); });
+  on('#slowToggle',()=>{ zmodel.slowVoice=(zmodel.slowVoice===false); ZM.saveNow(zmodel); buildDash();
+    playClip('great');   // instant preview at the new speed
+  });
   on('#dashReset',()=>{ if(confirm("Reset all of Zayn's progress?")){ zmodel=ZM.defaultModel(); ZM.saveNow(zmodel); buildDash(); } });
   on('#dashExport',()=>dashExport());
   on('#dashImport',()=>dashImport());
